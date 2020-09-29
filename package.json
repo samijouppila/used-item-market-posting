@@ -1,0 +1,19 @@
+{
+  "name": "used-item-market",
+  "version": "1.0.0",
+  "description": "An API for an used item market for course Cloud Integration 2020",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samijouppila/used-item-market.git"
+  },
+  "author": "Sami Jouppila",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samijouppila/used-item-market/issues"
+  },
+  "homepage": "https://github.com/samijouppila/used-item-market#readme"
+}
