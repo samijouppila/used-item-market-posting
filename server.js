@@ -18,7 +18,7 @@ app.use('/api', apiRouter);
 let server = null;
 
 module.exports = {
-  close: async function () {
+  close: function () {
     server.close();
   },
   start: async function (mode) {
