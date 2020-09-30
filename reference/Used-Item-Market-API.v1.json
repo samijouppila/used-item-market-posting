@@ -16,7 +16,62 @@
         "operationId": "post-users",
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "birthDate": {
+                      "type": "string",
+                      "description": "ISO 8601"
+                    },
+                    "contactInformation": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "string": {
+                          "type": "string"
+                        },
+                        "phoneNumber": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "username",
+                    "birthDate",
+                    "contactInformation"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "username": "mattimei",
+                      "birthDate": "1999-02-20",
+                      "contactInformation": {
+                        "name": "Matti Meikäläinen",
+                        "email": "matti.m@mail.com",
+                        "phoneNumber": "+358 40 1234 567"
+                      },
+                      "_id": "a89b5893234d78f21c"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
