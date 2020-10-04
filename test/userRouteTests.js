@@ -1,4 +1,5 @@
 const chai = require("chai");
+const { deleteOne } = require("../models/User");
 chai.use(require('chai-http'));
 const expect = require("chai").expect;
 const assert = require("chai").assert;
@@ -26,6 +27,7 @@ const createTestUser = async () => {
 
 describe('User routes', function () {
   before(async function () {
+    this.timeout(0); // Disable timeout due to db connection setup potentially taking over 2000 ms
     await server.start("test")
   });
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const userRouter = require('./users');
+const authRouter = require('./auth');
 
 const apiRouter = express.Router();
 
@@ -13,5 +14,7 @@ apiRouter.get('/documentation', (req, res) => {
 })
 
 apiRouter.use('/users', userRouter);
+apiRouter.use('/auth', authRouter);
+
 
 module.exports = apiRouter;

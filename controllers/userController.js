@@ -8,6 +8,16 @@ const createNewUser = async (req, res) => {
                 errorDescription: "User with that username already exists"
             });
         }
+        if (!req.body.hasOwnProperty('contactInformation')) {
+            return res.status(400).json({
+                errorDescription: "Must include contact information in user creation"
+            });
+        }
+        if (!req.body['contactInformation']['email'] && !req.body['contactInformation']['phoneNumber']) {
+            return res.status(400).json({
+                errorDescription: "Contact information must have email or phone number"
+            });
+        }
         const newUser = new User(req.body);
         newUser.save( (err, user) => {
             if (err || !user) {
@@ -30,6 +40,16 @@ const createNewUser = async (req, res) => {
     }
 }
 
+const getSelectedUserData = async (req, res) => {
+    User.findOne({ _id: req.params.id }, '-__v -password', function(err, user) {
+        if (err || !user) return res.status(404).send({
+            errorDescription: "User not found"
+        });
+        res.status(200).json(user);
+    });
+}
+
 module.exports = {
-    createNewUser
+    createNewUser,
+    getSelectedUserData
 }
