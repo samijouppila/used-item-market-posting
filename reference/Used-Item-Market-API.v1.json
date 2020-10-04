@@ -26,19 +26,15 @@
                       "type": "string"
                     },
                     "birthDate": {
-                      "type": "string",
-                      "description": "ISO 8601"
+                      "type": "string"
                     },
                     "contactInformation": {
                       "type": "object",
-                      "required": [
-                        "name"
-                      ],
                       "properties": {
                         "name": {
                           "type": "string"
                         },
-                        "string": {
+                        "email": {
                           "type": "string"
                         },
                         "phoneNumber": {
@@ -49,12 +45,7 @@
                     "_id": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "username",
-                    "birthDate",
-                    "contactInformation"
-                  ]
+                  }
                 },
                 "examples": {
                   "example-1": {
@@ -66,7 +57,8 @@
                         "email": "matti.m@mail.com",
                         "phoneNumber": "+358 40 1234 567"
                       },
-                      "_id": "a89b5893234d78f21c"
+                      "_id": "5f79fcfb70f5de5ebcd9803e"
+
                     }
                   }
                 }
@@ -142,6 +134,24 @@
                   }
                 }
               }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "text/html": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
             }
           }
         }
@@ -213,14 +223,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found",
@@ -235,7 +238,154 @@
         },
         "operationId": "get-users-id",
         "description": "Endpoint for user to get their own information",
-        "parameters": []
+        "parameters": [],
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Modify user's own information",
+        "operationId": "put-users-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for user to modify their own information",
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "ISO 8601"
+                  },
+                  "contactInformation": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "phoneNumber": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body for modifying user data. All fields optional"
+        }
+      },
+      "delete": {
+        "summary": "Delete user account",
+        "operationId": "delete-users-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for deleting selected user account",
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "summary": "Log in user",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "operationId": "get-auth-login",
+        "security": [
+          {
+            "HTTPBasic for login": []
+          }
+        ],
+        "description": "Endpoint for user to log in and obtain an authentication token"
       }
     }
   },
@@ -320,11 +470,13 @@
     "securitySchemes": {
       "HTTPBasic for login": {
         "type": "http",
-        "scheme": "basic"
+        "scheme": "basic",
+        "description": ""
       },
       "User Authorization": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "description": ""
       }
     }
   }
