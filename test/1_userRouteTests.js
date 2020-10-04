@@ -22,7 +22,7 @@ const createTestUser = async () => {
           "phoneNumber": "+358 40 1234 567"
         }
       }
-  );
+    );
 }
 
 describe('User routes', function () {
@@ -35,13 +35,30 @@ describe('User routes', function () {
     server.close()
   });
 
+  // Jwt token and test user id storage for reuse later
+  let token;
+  let testId;
+
   describe('Register user', function () {
     it('Should create a new user successfully', async function () {
       try {
         const response = await createTestUser();
         expect(response).to.have.property('status');
         expect(response.status).to.equal(201);
-      } catch(error) {
+        expect(response).to.have.property('body');
+        expect(response.body).to.have.property('username');
+        expect(response.body.username).to.equal('mattimei');
+        expect(response.body).to.have.property('birthDate');
+        expect(response.body.birthDate).to.equal("1999-02-20");
+        expect(response.body).to.have.property('contactInformation');
+        expect(response.body.contactInformation).to.have.property('name');
+        expect(response.body.contactInformation).to.have.property('email');
+        expect(response.body.contactInformation).to.have.property('phoneNumber');
+        expect(response.body).to.have.property('_id');
+
+        // Store created id for reuse in variable id
+        testId = response.body._id
+      } catch (error) {
         assert.fail(error);
       }
     });
@@ -54,7 +71,7 @@ describe('User routes', function () {
         expect(response).to.have.property('body');
         expect(response.body).to.have.property('errorDescription');
         expect(response.body.errorDescription).to.equal('User with that username already exists')
-      } catch(error) {
+      } catch (error) {
         assert.fail(error);
       }
     })
@@ -74,12 +91,12 @@ describe('User routes', function () {
                 "phoneNumber": "+358 40 1234 567"
               }
             }
-        );
+          );
         expect(response).to.have.property('status');
         expect(response.status).to.equal(400);
         expect(response).to.have.property('body');
         expect(response.body).to.have.property('errorDescription');
-      } catch(error) {
+      } catch (error) {
         assert.fail(error);
       }
     })
@@ -99,12 +116,12 @@ describe('User routes', function () {
                 "phoneNumber": "+358 40 1234 567"
               }
             }
-        );
+          );
         expect(response).to.have.property('status');
         expect(response.status).to.equal(400);
         expect(response).to.have.property('body');
         expect(response.body).to.have.property('errorDescription');
-      } catch(error) {
+      } catch (error) {
         assert.fail(error);
       }
     })
@@ -123,14 +140,68 @@ describe('User routes', function () {
                 "name": "Matti Meikäläinen"
               }
             }
-        );
+          );
         expect(response).to.have.property('status');
         expect(response.status).to.equal(400);
         expect(response).to.have.property('body');
         expect(response.body).to.have.property('errorDescription');
-      } catch(error) {
+      } catch (error) {
         assert.fail(error);
       }
     })
+
+    
+  });
+  describe('Get selected user details', function () {
+    before (async function () {
+      // Fetch jwt token, stored elsewhere for reuse after this
+      const tokenResponse = await chai.request(apiRoot)
+        .get("/auth/login")
+        .set('Authorization', 'Basic bWF0dGltZWk6TUtPMDk4VUhC')
+        .send();
+      token = tokenResponse.body.token;
+    })
+
+    it('Should return correct stored data for user when a valid id is given', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .get(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send();
+        expect(response).to.have.property('status');
+        expect(response.status).to.equal(200);
+        expect(response).to.have.property('body');
+        expect(response.body).to.have.property('username');
+        expect(response.body.username).to.equal('mattimei');
+        expect(response.body).to.have.property('birthDate');
+        expect(response.body.birthDate).to.equal("1999-02-20");
+        expect(response.body).to.have.property('contactInformation');
+        expect(response.body.contactInformation).to.have.property('name');
+        expect(response.body.contactInformation.name).to.equal('Matti Meikäläinen');
+        expect(response.body.contactInformation).to.have.property('email');
+        expect(response.body.contactInformation.email).to.equal('matti.m@mail.com');
+        expect(response.body.contactInformation).to.have.property('phoneNumber');
+        expect(response.body.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
+        expect(response.body).to.have.property('_id');
+        expect(response.body._id).to.equal(testId)
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+
+    it('Should fail to find user information when given an incorrect id', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .get(`/users/${testId}-this-cannot-exist-`)
+          .set('Authorization', `Bearer ${token}`)
+          .send();
+        expect(response).to.have.property('status');
+        expect(response.status).to.equal(404);
+        expect(response).to.have.property('body');
+        expect(response.body).to.have.property('errorDescription');
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
   });
 });
