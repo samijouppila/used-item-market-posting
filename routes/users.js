@@ -8,7 +8,8 @@ const {
 const {
     createNewUser,
     getSelectedUserData,
-    modifySelectedUserData
+    modifySelectedUserData,
+    deleteSelectedUser
 } = require('../controllers/userController');
 
 userRouter.post('', createNewUser);
@@ -16,5 +17,7 @@ userRouter.post('', createNewUser);
 userRouter.get('/:id', checkJwt, getSelectedUserData);
 
 userRouter.put('/:id', checkJwt, modifySelectedUserData);
+
+userRouter.delete('/:id', checkJwt, deleteSelectedUser);
 
 module.exports = userRouter;

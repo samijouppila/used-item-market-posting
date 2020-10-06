@@ -56,11 +56,6 @@ const modifySelectedUserData = async (req, res) => {
     if (req.user._id != req.params.id) {
         return res.status(401).send("Unauthorized") // User can only modify their own data
     }
-    if (!req.body) {
-        return res.status(409).send({
-            errorDescription: "No request body"
-        });
-    }
     User.findOne({ _id: req.params.id}, '-__v', function (err, user) {
         if (err || !user) return res.status(404).send({
             errorDescription: "User not found"
@@ -88,8 +83,21 @@ const modifySelectedUserData = async (req, res) => {
     })
 }
 
+const deleteSelectedUser = async (req, res) => {
+    if (req.user._id != req.params.id) {
+        return res.status(401).send("Unauthorized") // User can only delete their own account
+    }
+    User.findOneAndDelete({ _id: req.params.id}, function(err, user) {
+        if (err || !user)  return res.status(404).send({
+            errorResponse: "User not found"
+        });
+        res.status(200).send("OK!");
+    })
+}
+
 module.exports = {
     createNewUser,
     getSelectedUserData,
-    modifySelectedUserData
+    modifySelectedUserData,
+    deleteSelectedUser
 }
