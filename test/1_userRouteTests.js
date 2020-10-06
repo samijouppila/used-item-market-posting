@@ -201,6 +201,7 @@ describe('User routes', function () {
       }
     });
   });
+
   describe('Modify user details', function () {
     it('Should modify user details when given all possible fields', async function () {
       try {
@@ -306,11 +307,53 @@ describe('User routes', function () {
     it('Should fail to modify user information when given an incorrect id', async function () {
       try {
         const response = await chai.request(apiRoot)
-          .get(`/users/${testId}-this-cannot-exist-`)
+          .put(`/users/${testId}-this-cannot-exist-`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            "username": "mattimei",
+            "password": "MKO098UHB",
+            "birthDate": "1999-02-20",
+            "contactInformation": {
+              "name": "Matti Meikäläinen",
+              "email": "matti.m@mail.com",
+              "phoneNumber": "+358 40 1234 567"
+            }
+          });
+        expect(response).to.have.property('status');
+        expect(response.status).not.to.equal(200);
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+  });
+
+  describe('Delete user account', function () {
+    it('Should not succeed when given an incorrect id', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .delete(`/users/${testId}-this-cannot-exist-`)
           .set('Authorization', `Bearer ${token}`)
           .send();
         expect(response).to.have.property('status');
         expect(response.status).not.to.equal(200);
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+    it('Should delete user account when given a correct id and correct authorization', async function () {
+      try {
+        const deleteResponse = await chai.request(apiRoot)
+          .delete(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send();
+        expect(deleteResponse).to.have.property('status');
+        expect(deleteResponse.status).to.equal(200);
+        const getResponse = await chai.request(apiRoot)
+          .get(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send();
+          expect(getResponse).to.have.property('status');
+          expect(getResponse.status).not.to.equal(200);
       } catch (error) {
         assert.fail(error);
       }
