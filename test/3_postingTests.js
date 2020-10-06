@@ -99,6 +99,7 @@ describe('User routes', function () {
                 expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
                 expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
                 expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
+                // -- TODO Images
                 /*expect(response.body).to.have.property('images');
                 expect(response.body.images).to.be.array();
                 expect(response.body.images.length).to.equal(0);*/

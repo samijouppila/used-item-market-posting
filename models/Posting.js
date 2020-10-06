@@ -41,6 +41,16 @@ const PostingSchema = new Schema(
                 type: Boolean,
                 required: true
             }
+        },
+        seller: {
+            type: Schema.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        slug: {
+            type: String,
+            required: true,
+            unique: true
         }
     },
     {

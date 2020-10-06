@@ -9,6 +9,6 @@ const {
     createNewPosting
 } = require('../controllers/postingController');
 
-postingRouter.post('', createNewPosting);
+postingRouter.post('', checkJwt,  createNewPosting);
 
 module.exports = postingRouter;
