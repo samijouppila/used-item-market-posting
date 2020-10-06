@@ -11,6 +11,11 @@ const createNewPosting = async (req, res) => {
             errorDescription: "Title missing or in wrong format"
         })
     }
+    if (!req.body['deliveryTypes']['shipping'] && !req.body['deliveryTypes']['pickup']) {
+        return res.status(400).send({
+            errorDescription: "Posting must have a valid delivery type"
+        })
+    }
     const slug = await generatePostingSlug(req.body.description);
     const newPosting = new Posting({
         ...req.body,
@@ -19,7 +24,6 @@ const createNewPosting = async (req, res) => {
     });
     newPosting.save( (err, posting) => {
         if (err) {
-            console.log(err)
             return res.status(400).send({
                 errorDescription: "Bad request"
             });
