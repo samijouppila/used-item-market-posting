@@ -7,11 +7,14 @@ const {
 
 const {
     createNewUser,
-    getSelectedUserData
+    getSelectedUserData,
+    modifySelectedUserData
 } = require('../controllers/userController');
 
 userRouter.post('', createNewUser);
 
 userRouter.get('/:id', checkJwt, getSelectedUserData);
+
+userRouter.put('/:id', checkJwt, modifySelectedUserData);
 
 module.exports = userRouter;

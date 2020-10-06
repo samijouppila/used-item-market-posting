@@ -41,6 +41,9 @@ const createNewUser = async (req, res) => {
 }
 
 const getSelectedUserData = async (req, res) => {
+    if (req.user._id != req.params.id) {
+        return res.status(401).send("Unauthorized") // User can only get their own data
+    }
     User.findOne({ _id: req.params.id }, '-__v -password', function(err, user) {
         if (err || !user) return res.status(404).send({
             errorDescription: "User not found"
@@ -49,7 +52,44 @@ const getSelectedUserData = async (req, res) => {
     });
 }
 
+const modifySelectedUserData = async (req, res) => {
+    if (req.user._id != req.params.id) {
+        return res.status(401).send("Unauthorized") // User can only modify their own data
+    }
+    if (!req.body) {
+        return res.status(409).send({
+            errorDescription: "No request body"
+        });
+    }
+    User.findOne({ _id: req.params.id}, '-__v', function (err, user) {
+        if (err || !user) return res.status(404).send({
+            errorDescription: "User not found"
+        });
+        for (const key in req.body) {
+            if (key != 'username' && key != '_id' && key != 'contactInformation') {  // Prevent changing _id and username fields and handle contactInformation separately
+                user[key] = req.body[key];
+            } else if (key == 'contactInformation') {
+                for (info in req.body.contactInformation) {
+                    user.contactInformation[info] = req.body.contactInformation[info];
+                }
+            }
+        }
+        user.save( function (err, user) {
+            if (err) return res.status(400).send({
+                errorDescription: "Bad request body"
+            });
+            res.status(200).json({
+                username: user.username,
+                birthDate: user.birthDate,
+                contactInformation: user.contactInformation,
+                _id: user._id
+            })
+        })
+    })
+}
+
 module.exports = {
     createNewUser,
-    getSelectedUserData
+    getSelectedUserData,
+    modifySelectedUserData
 }

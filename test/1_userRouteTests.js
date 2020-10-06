@@ -150,10 +150,9 @@ describe('User routes', function () {
       }
     })
 
-    
   });
   describe('Get selected user details', function () {
-    before (async function () {
+    before(async function () {
       // Fetch jwt token, stored elsewhere for reuse after this
       const tokenResponse = await chai.request(apiRoot)
         .get("/auth/login")
@@ -196,9 +195,122 @@ describe('User routes', function () {
           .set('Authorization', `Bearer ${token}`)
           .send();
         expect(response).to.have.property('status');
-        expect(response.status).to.equal(404);
+        expect(response.status).not.to.equal(200);
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+  });
+  describe('Modify user details', function () {
+    it('Should modify user details when given all possible fields', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .put(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            "password": "UHBMKO098",
+            "birthDate": "2000-02-20",
+            "contactInformation": {
+              "name": "John Doe",
+              "email": "jd@mail.com",
+              "phoneNumber": "+358 40 765 4321"
+            }
+          });
+        expect(response).to.have.property('status');
+        expect(response.status).to.equal(200);
         expect(response).to.have.property('body');
-        expect(response.body).to.have.property('errorDescription');
+        expect(response.body).to.have.property('username');
+        expect(response.body.username).to.equal('mattimei');
+        expect(response.body).to.have.property('birthDate');
+        expect(response.body.birthDate).to.equal("2000-02-20");
+        expect(response.body).to.have.property('contactInformation');
+        expect(response.body.contactInformation).to.have.property('name');
+        expect(response.body.contactInformation.name).to.equal('John Doe');
+        expect(response.body.contactInformation).to.have.property('email');
+        expect(response.body.contactInformation.email).to.equal('jd@mail.com');
+        expect(response.body.contactInformation).to.have.property('phoneNumber');
+        expect(response.body.contactInformation.phoneNumber).to.equal('+358 40 765 4321');
+        expect(response.body).to.have.property('_id');
+        expect(response.body._id).to.equal(testId)
+        const tokenResponse = await chai.request(apiRoot)
+          .get("/auth/login")
+          .set('Authorization', 'Basic bWF0dGltZWk6VUhCTUtPMDk4')
+          .send();
+        expect(tokenResponse).to.have.property('status');
+        expect(tokenResponse.status).to.equal(200);
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+
+    it('Should modify user details when only given name as an updated field', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .put(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            "contactInformation": {
+              "name": "Jane Doe",
+            }
+          });
+        expect(response).to.have.property('status');
+        expect(response.status).to.equal(200);
+        expect(response).to.have.property('body');
+        expect(response.body).to.have.property('username');
+        expect(response.body.username).to.equal('mattimei');
+        expect(response.body).to.have.property('birthDate');
+        expect(response.body.birthDate).to.equal("2000-02-20");
+        expect(response.body).to.have.property('contactInformation');
+        expect(response.body.contactInformation).to.have.property('name');
+        expect(response.body.contactInformation.name).to.equal('Jane Doe');
+        expect(response.body.contactInformation).to.have.property('email');
+        expect(response.body.contactInformation.email).to.equal('jd@mail.com');
+        expect(response.body.contactInformation).to.have.property('phoneNumber');
+        expect(response.body.contactInformation.phoneNumber).to.equal('+358 40 765 4321');
+        expect(response.body).to.have.property('_id');
+        expect(response.body._id).to.equal(testId)
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+
+    it('Should not update username or _id if given in request', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .put(`/users/${testId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            "username": "johndoe",
+            "_id": "newuseridashiogabsoihajsdsakbjd"
+          });
+        expect(response).to.have.property('status');
+        expect(response.status).to.equal(200);
+        expect(response).to.have.property('body');
+        expect(response.body).to.have.property('username');
+        expect(response.body.username).to.equal('mattimei');
+        expect(response.body).to.have.property('birthDate');
+        expect(response.body.birthDate).to.equal("2000-02-20");
+        expect(response.body).to.have.property('contactInformation');
+        expect(response.body.contactInformation).to.have.property('name');
+        expect(response.body.contactInformation.name).to.equal('Jane Doe');
+        expect(response.body.contactInformation).to.have.property('email');
+        expect(response.body.contactInformation.email).to.equal('jd@mail.com');
+        expect(response.body.contactInformation).to.have.property('phoneNumber');
+        expect(response.body.contactInformation.phoneNumber).to.equal('+358 40 765 4321');
+        expect(response.body).to.have.property('_id');
+        expect(response.body._id).to.equal(testId)
+      } catch (error) {
+        assert.fail(error);
+      }
+    });
+    it('Should fail to modify user information when given an incorrect id', async function () {
+      try {
+        const response = await chai.request(apiRoot)
+          .get(`/users/${testId}-this-cannot-exist-`)
+          .set('Authorization', `Bearer ${token}`)
+          .send();
+        expect(response).to.have.property('status');
+        expect(response.status).not.to.equal(200);
       } catch (error) {
         assert.fail(error);
       }

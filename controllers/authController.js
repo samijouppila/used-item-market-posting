@@ -63,7 +63,7 @@ const issueNewJwtToken = async (req, res) => {
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, options);
 
-    return res.status(200).json({ token });
+    res.status(200).json({ token });
 }
 
 module.exports = {
