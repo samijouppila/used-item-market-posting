@@ -550,6 +550,10 @@
                           },
                           "location": {
                             "type": "object",
+                            "required": [
+                              "country",
+                              "city"
+                            ],
                             "properties": {
                               "country": {
                                 "type": "string"
@@ -565,11 +569,12 @@
                           "askingPrice": {
                             "type": "number"
                           },
-                          "createdAt": {
-                            "type": "string"
-                          },
                           "deliveryTypes": {
                             "type": "object",
+                            "required": [
+                              "shipping",
+                              "pickup"
+                            ],
                             "properties": {
                               "shipping": {
                                 "type": "boolean"
@@ -581,9 +586,18 @@
                           },
                           "seller": {
                             "type": "object",
+                            "required": [
+                              "contactInformation",
+                              "_id"
+                            ],
                             "properties": {
                               "contactInformation": {
                                 "type": "object",
+                                "required": [
+                                  "name",
+                                  "email",
+                                  "phoneNumber"
+                                ],
                                 "properties": {
                                   "name": {
                                     "type": "string"
@@ -603,8 +617,17 @@
                           },
                           "images": {
                             "type": "array",
+                            "uniqueItems": true,
                             "items": {
-                              "type": "object"
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "_id"
+                              ]
                             }
                           },
                           "slug": {
@@ -612,13 +635,74 @@
                           },
                           "_id": {
                             "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
                           }
-                        }
+                        },
+                        "required": [
+                          "title",
+                          "description",
+                          "category",
+                          "location",
+                          "askingPrice",
+                          "deliveryTypes",
+                          "seller",
+                          "slug",
+                          "_id",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     }
-                  }
+                  },
+                  "required": [
+                    "postings"
+                  ]
                 },
-                "examples": {}
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "postings": [
+                        {
+                          "title": "Helkama Jopo",
+                          "description": "Used blue bicycle in good condition",
+                          "category": "cycling",
+                          "location": {
+                            "country": "FI",
+                            "city": "Oulu",
+                            "postalCode": "90570"
+                          },
+                          "askingPrice": 150,
+                          "deliveryTypes": {
+                            "shipping": true,
+                            "pickup": true
+                          },
+                          "seller": {
+                            "contactInformation": {
+                              "name": "Matti Meikäläinen",
+                              "email": "matti.m@mail.com",
+                              "phoneNumber": "+358 40 1234 567"
+                            },
+                            "_id": "4f8313a89231d42189ac"
+                          },
+                          "images": [
+                            {
+                              "_id": "1d42189ac4f8313a8923"
+                            }
+                          ],
+                          "slug": "helkama-jopo",
+                          "_id": "9ac4f8313a89231d4218",
+                          "createdAt": "2020-09-21T17:32:28Z",
+                          "updatedAt": "2020-09-21T17:32:28Z"
+                        }
+                      ]
+                    }
+                  }
+                }
               }
             }
           },
@@ -670,7 +754,8 @@
                       "type": "object",
                       "properties": {
                         "country": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "ISO 3166"
                         },
                         "city": {
                           "type": "string"
@@ -682,9 +767,6 @@
                     },
                     "askingPrice": {
                       "type": "number"
-                    },
-                    "createdAt": {
-                      "type": "string"
                     },
                     "deliveryTypes": {
                       "type": "object",
@@ -730,6 +812,44 @@
                     },
                     "_id": {
                       "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "title": "Helkama Jopo",
+                      "description": "Used blue bicycle in good condition",
+                      "category": "cycling",
+                      "location": {
+                        "country": "FI",
+                        "city": "Oulu",
+                        "postalCode": "90570"
+                      },
+                      "askingPrice": 150,
+                      "deliveryTypes": {
+                        "shipping": true,
+                        "pickup": true
+                      },
+                      "seller": {
+                        "contactInformation": {
+                          "name": "Matti Meikäläinen",
+                          "email": "matti.m@mail.com",
+                          "phoneNumber": "+358 40 1234 567"
+                        },
+                        "_id": "4f8313a89231d42189ac"
+                      },
+                      "images": [],
+                      "slug": "helkama-jopo",
+                      "_id": "9ac4f8313a89231d4218",
+                      "createdAt": "2020-09-21T17:32:28Z",
+                      "updatedAt": "2020-09-21T17:32:28Z"
                     }
                   }
                 }
@@ -776,8 +896,7 @@
                     "type": "object",
                     "required": [
                       "country",
-                      "city",
-                      "postalCode"
+                      "city"
                     ],
                     "properties": {
                       "country": {
@@ -957,7 +1076,6 @@
               "postalCode": "90570"
             },
             "askingPrice": 150,
-            "createdAt": "2020-09-21T17:32:28Z",
             "deliveryTypes": {
               "shipping": true,
               "pickup": true
@@ -976,7 +1094,9 @@
               }
             ],
             "slug": "helkama-jopo",
-            "_id": "9ac4f8313a89231d4218"
+            "_id": "9ac4f8313a89231d4218",
+            "createdAt": "2020-09-21T17:32:28Z",
+            "updatedAt": "2020-09-21T17:32:28Z"
           }
         },
         "properties": {
@@ -993,8 +1113,7 @@
             "type": "object",
             "required": [
               "country",
-              "city",
-              "postalCode"
+              "city"
             ],
             "properties": {
               "country": {
@@ -1011,9 +1130,6 @@
           },
           "askingPrice": {
             "type": "number"
-          },
-          "createdAt": {
-            "type": "string"
           },
           "deliveryTypes": {
             "type": "object",
@@ -1047,6 +1163,12 @@
           "_id": {
             "type": "string",
             "description": "Generated by MongoDB"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
           }
         },
         "required": [
@@ -1055,11 +1177,12 @@
           "category",
           "location",
           "askingPrice",
-          "createdAt",
           "deliveryTypes",
           "seller",
           "slug",
-          "_id"
+          "_id",
+          "createdAt",
+          "updatedAt"
         ]
       }
     },
