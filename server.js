@@ -39,7 +39,7 @@ module.exports = {
       });
       console.log('Connected to database');
       server = app.listen(port, () => {
-        console.log(`Used item market API listening on ${port}/api\n`);
+        console.log(`Used item market API listening on port ${port}\n`);
       });
     } catch (err) {
       throw new Error(err);
