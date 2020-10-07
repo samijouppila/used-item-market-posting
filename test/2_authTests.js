@@ -40,7 +40,7 @@ describe('User authentication', function () {
     let token;
     let testId;
 
-    describe('Login authorization', function () {
+    describe('Login authentication', function () {
         before(async function () {
             const response = await createTestUser(); // Make sure there is a user to authenticate
             testId = response.body._id
