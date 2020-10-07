@@ -32,6 +32,9 @@ describe('User routes', function () {
     let token;
     let testId;
 
+    // Slug storage for created postings for reuse later
+    let slugs = [];
+
     before(async function () {
         this.timeout(0); // Disable timeout due to db connection setup potentially taking over 2000 ms
         await server.start("test")
@@ -45,6 +48,8 @@ describe('User routes', function () {
             .send();
         token = loginResponse.body.token;
     });
+
+    
 
     describe('Create new posting', function () {
         it('Should successfully create a new posting with valid request body', async function () {
@@ -110,7 +115,9 @@ describe('User routes', function () {
                 expect(response.body).to.have.property('createdAt');
                 expect(response.body.createdAt).to.be.string();
                 expect(response.body).to.have.property('updatedAt');
-                expect(response.body.createdAt).to.be.string();
+                expect(response.body.updatedAt).to.be.string();
+
+                slugs.push(response.body.slug);
             } catch (error) {
                 assert.fail(error)
             }
@@ -213,7 +220,7 @@ describe('User routes', function () {
         });
 
         it("Should gain more entries in the list when they are created", async function () {
-            await chai.request(apiRoot)
+            const postResponse = await chai.request(apiRoot)
                     .post("/postings")
                     .set('Authorization', `Bearer ${token}`)
                     .set('Content-Type', 'application/json')
@@ -234,6 +241,9 @@ describe('User routes', function () {
                             }
                         }
                     );
+            
+            slugs.push(postResponse.body.slug);
+
             const response = await chai.request(apiRoot)
                 .get(`/users/${testId}/postings`)
                 .set('Authorization', `Bearer ${token}`)
@@ -245,6 +255,40 @@ describe('User routes', function () {
             expect(response.body.postings).to.be.array();
             expect(response.body.postings.length).to.equal(2);
         });
+    });
+
+    describe("Modify a posting", function() {
+        it('Should modify an existing posting when given new information for all fields in valid format', async function() {
+            try {
+                 // TODO
+            } catch(error) {
+                assert.fail(error);
+            }
+        });
+
+        it('Should modify an existing posting when only given description as a field in a valid format', async function () {
+            try {
+                // TODO
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+
+        it('Should not modify slug, _id, createdAt or updatedAt fields if given in the request body', async function() {
+            try {
+                // TODO
+            } catch (error) {
+                assert.fail(error);
+            }
+        })
+
+        it('Should fail if the user is attempting to set both delivery types as false', async function() {
+            try {
+                // TODO
+            } catch (error) {
+                assert.fail(error);
+            }
+        })
     });
 
     after(async function () {
