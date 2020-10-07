@@ -2,7 +2,7 @@ const env = require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const port = 3000
+const port = process.env.PORT || 3000
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -39,7 +39,7 @@ module.exports = {
       });
       console.log('Connected to database');
       server = app.listen(port, () => {
-        console.log(`Used item market API listening on http://localhost:${port}/api\n`);
+        console.log(`Used item market API listening on ${port}/api\n`);
       });
     } catch (err) {
       throw new Error(err);
