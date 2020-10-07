@@ -12,6 +12,7 @@ Note: They are deployed using the free tier on Heroku. This means they may be as
 Copy and rename .env.example to .env. Insert the following environment variables:
 - MONGODB_PRODUCTION_URI: URI to your MongoDB production database
 - MONGODB_TEST_URI: URI to your MongoDB test database
+- JWT_SECRET: Your JWT secret.
 
 npm install
 
