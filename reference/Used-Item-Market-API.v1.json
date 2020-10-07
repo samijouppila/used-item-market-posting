@@ -58,7 +58,6 @@
                         "phoneNumber": "+358 40 1234 567"
                       },
                       "_id": "5f79fcfb70f5de5ebcd9803e"
-
                     }
                   }
                 }
@@ -509,6 +508,462 @@
         ],
         "description": "Endpoint for user to log in and obtain an authentication token"
       }
+    },
+    "/users/{id}/postings": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get all user's postings",
+        "operationId": "get-users-id-postings",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "postings": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": "object",
+                            "required": [
+                              "country",
+                              "city"
+                            ],
+                            "properties": {
+                              "country": {
+                                "type": "string"
+                              },
+                              "city": {
+                                "type": "string"
+                              },
+                              "postalCode": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "askingPrice": {
+                            "type": "number"
+                          },
+                          "deliveryTypes": {
+                            "type": "object",
+                            "required": [
+                              "shipping",
+                              "pickup"
+                            ],
+                            "properties": {
+                              "shipping": {
+                                "type": "boolean"
+                              },
+                              "pickup": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "seller": {
+                            "type": "object",
+                            "required": [
+                              "contactInformation",
+                              "_id"
+                            ],
+                            "properties": {
+                              "contactInformation": {
+                                "type": "object",
+                                "required": [
+                                  "name",
+                                  "email",
+                                  "phoneNumber"
+                                ],
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "phoneNumber": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "_id": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "images": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "_id"
+                              ]
+                            }
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "_id": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "description",
+                          "category",
+                          "location",
+                          "askingPrice",
+                          "deliveryTypes",
+                          "seller",
+                          "slug",
+                          "_id",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "postings"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "postings": [
+                        {
+                          "title": "Helkama Jopo",
+                          "description": "Used blue bicycle in good condition",
+                          "category": "cycling",
+                          "location": {
+                            "country": "FI",
+                            "city": "Oulu",
+                            "postalCode": "90570"
+                          },
+                          "askingPrice": 150,
+                          "deliveryTypes": {
+                            "shipping": true,
+                            "pickup": true
+                          },
+                          "seller": {
+                            "contactInformation": {
+                              "name": "Matti Meikäläinen",
+                              "email": "matti.m@mail.com",
+                              "phoneNumber": "+358 40 1234 567"
+                            },
+                            "_id": "4f8313a89231d42189ac"
+                          },
+                          "images": [
+                            {
+                              "_id": "1d42189ac4f8313a8923"
+                            }
+                          ],
+                          "slug": "helkama-jopo",
+                          "_id": "9ac4f8313a89231d4218",
+                          "createdAt": "2020-09-21T17:32:28Z",
+                          "updatedAt": "2020-09-21T17:32:28Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for an user to fetch all their own postings",
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ]
+      }
+    },
+    "/postings": {
+      "post": {
+        "summary": "Create new posting",
+        "operationId": "post-postings",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string",
+                          "description": "ISO 3166"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "askingPrice": {
+                      "type": "number"
+                    },
+                    "deliveryTypes": {
+                      "type": "object",
+                      "properties": {
+                        "shipping": {
+                          "type": "boolean"
+                        },
+                        "pickup": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "seller": {
+                      "type": "object",
+                      "properties": {
+                        "contactInformation": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phoneNumber": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "title": "Helkama Jopo",
+                      "description": "Used blue bicycle in good condition",
+                      "category": "cycling",
+                      "location": {
+                        "country": "FI",
+                        "city": "Oulu",
+                        "postalCode": "90570"
+                      },
+                      "askingPrice": 150,
+                      "deliveryTypes": {
+                        "shipping": true,
+                        "pickup": true
+                      },
+                      "seller": {
+                        "contactInformation": {
+                          "name": "Matti Meikäläinen",
+                          "email": "matti.m@mail.com",
+                          "phoneNumber": "+358 40 1234 567"
+                        },
+                        "_id": "4f8313a89231d42189ac"
+                      },
+                      "images": [],
+                      "slug": "helkama-jopo",
+                      "_id": "9ac4f8313a89231d4218",
+                      "createdAt": "2020-09-21T17:32:28Z",
+                      "updatedAt": "2020-09-21T17:32:28Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "description": "Endpoint for an user to create a new posting",
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "required": [
+                      "country",
+                      "city"
+                    ],
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "description": "ISO 3166"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "askingPrice": {
+                    "type": "number"
+                  },
+                  "deliveryTypes": {
+                    "type": "object",
+                    "required": [
+                      "shipping",
+                      "pickup"
+                    ],
+                    "description": "One or more of delivery types has to be true",
+                    "properties": {
+                      "shipping": {
+                        "type": "boolean"
+                      },
+                      "pickup": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "category",
+                  "location",
+                  "askingPrice",
+                  "deliveryTypes"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "title": "Helkama Jopo",
+                    "description": "Used blue bicycle in good condition",
+                    "category": "cycling",
+                    "location": {
+                      "country": "FI",
+                      "city": "Oulu",
+                      "postalCode": "90570"
+                    },
+                    "askingPrice": 150,
+                    "deliveryTypes": {
+                      "shipping": true,
+                      "pickup": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body model for creating a new posting"
+        }
+      }
     }
   },
   "components": {
@@ -587,6 +1042,148 @@
             "errorDescription": "Request failed due to unknown error"
           }
         }
+      },
+      "Image": {
+        "title": "Image",
+        "type": "object",
+        "description": "",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Generated by MongoDB"
+          },
+          "image": {
+            "type": "string",
+            "description": "Image is stored as a string buffer in MongoDB"
+          }
+        },
+        "required": [
+          "_id",
+          "image"
+        ]
+      },
+      "Posting": {
+        "title": "Posting",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "title": "Helkama Jopo",
+            "description": "Used blue bicycle in good condition",
+            "category": "cycling",
+            "location": {
+              "country": "FI",
+              "city": "Oulu",
+              "postalCode": "90570"
+            },
+            "askingPrice": 150,
+            "deliveryTypes": {
+              "shipping": true,
+              "pickup": true
+            },
+            "seller": {
+              "contactInformation": {
+                "name": "Matti Meikäläinen",
+                "email": "matti.m@mail.com",
+                "phoneNumber": "+358 40 1234 567"
+              },
+              "_id": "4f8313a89231d42189ac"
+            },
+            "images": [
+              {
+                "_id": "1d42189ac4f8313a8923"
+              }
+            ],
+            "slug": "helkama-jopo",
+            "_id": "9ac4f8313a89231d4218",
+            "createdAt": "2020-09-21T17:32:28Z",
+            "updatedAt": "2020-09-21T17:32:28Z"
+          }
+        },
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "country",
+              "city"
+            ],
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "ISO 3166"
+              },
+              "city": {
+                "type": "string"
+              },
+              "postalCode": {
+                "type": "string"
+              }
+            }
+          },
+          "askingPrice": {
+            "type": "number"
+          },
+          "deliveryTypes": {
+            "type": "object",
+            "required": [
+              "shipping",
+              "pickup"
+            ],
+            "properties": {
+              "shipping": {
+                "type": "boolean"
+              },
+              "pickup": {
+                "type": "boolean"
+              }
+            }
+          },
+          "seller": {
+            "$ref": "#/components/schemas/User"
+          },
+          "images": {
+            "type": "array",
+            "description": "Has list of ids that can be used to separately fetch images from different endpoint",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            }
+          },
+          "slug": {
+            "type": "string",
+            "description": "Automatically generated from title"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Generated by MongoDB"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "category",
+          "location",
+          "askingPrice",
+          "deliveryTypes",
+          "seller",
+          "slug",
+          "_id",
+          "createdAt",
+          "updatedAt"
+        ]
       }
     },
     "securitySchemes": {
