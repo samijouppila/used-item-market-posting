@@ -289,6 +289,14 @@ describe('User routes', function () {
                 assert.fail(error);
             }
         })
+
+        it('Should fail when trying to modify a non-existing posting', async function () {
+            try {
+                // TODO
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
     });
 
     after(async function () {
