@@ -6,9 +6,11 @@ const {
 } = require('../controllers/authController')
 
 const {
-    createNewPosting
+    createNewPosting,
+    modifyExistingPosting
 } = require('../controllers/postingController');
 
 postingRouter.post('', checkJwt,  createNewPosting);
+postingRouter.put('/:slug', checkJwt, modifyExistingPosting);
 
 module.exports = postingRouter;

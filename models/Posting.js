@@ -58,6 +58,13 @@ const PostingSchema = new Schema(
     }
 );
 
+PostingSchema.pre('validate', function(next) {
+    if (!this.deliveryTypes.shipping && !this.deliveryTypes.pickup) {
+        this.invalidate('deliveryTypes', 'Must specify at least one valid delivery type', this.deliveryTypes.shipping);
+    }
+    next();
+})
+
 const Posting = mongoose.model('Posting', PostingSchema);
 
 module.exports = Posting;

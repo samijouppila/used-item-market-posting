@@ -48,6 +48,27 @@ const createNewPosting = async (req, res) => {
     })
 }
 
+const modifyExistingPosting = async (req, res) => {
+    Posting.findOne( {slug: req.params.slug } )
+        .populate('seller', '-username -birthDate -password -__v')
+        .exec( function (err, posting) {
+            if (err || !posting) return res.status(404).send({ errorDescription: "Posting not found"});
+            if (req.user._id != posting.seller._id) {
+                return res.status(401).send("Unauthorized") // User can only modify their own postings
+            }
+            for (key in req.body) {
+                if (key != 'slug') {
+                    posting[key] = req.body[key]
+                }
+            }
+            posting.save( function(err, posting) {
+                if (err) return res.status(400).send({ errorDescription: "Incorrect request body" })
+                res.status(200).json( posting );
+            })
+        });
+}
+
 module.exports = {
-    createNewPosting
+    createNewPosting,
+    modifyExistingPosting
 }

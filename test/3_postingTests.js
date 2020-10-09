@@ -260,14 +260,6 @@ describe('User routes', function () {
     describe("Modify a posting", function () {
         it('Should modify an existing posting when given new information for all fields in valid format', async function () {
             try {
-                // TODO
-            } catch (error) {
-                assert.fail(error);
-            }
-        });
-
-        it('Should modify an existing posting when given new information for all fields in valid format', async function () {
-            try {
                 const response = await chai.request(apiRoot)
                     .put(`/postings/${slugs[0]}`)
                     .set('Authorization', `Bearer ${token}`)
@@ -357,7 +349,7 @@ describe('User routes', function () {
             }
         });
 
-        it('Should not modify slug, _id, createdAt or updatedAt fields if given in the request body', async function () {
+        it('Should not modify slug, createdAt or updatedAt fields if given in the request body', async function () {
             try {
                 const response = await chai.request(apiRoot)
                     .put(`/postings/${slugs[0]}`)
@@ -366,7 +358,6 @@ describe('User routes', function () {
                     .send(
                         {
                             slug: "not-applicable-slug",
-                            _id: "invalididhere",
                             createdAt: "2010-09-21T17:32:28Z",
                             updatedAt: "2010-09-22T17:32:28Z"
                         }
@@ -465,26 +456,30 @@ describe('User routes', function () {
         });
 
         it('Should delete existing posting with valid authorization', async function () {
-            for (slug of slugs) {
-                const response = await chai.request(apiRoot)
-                    .delete(`/postings/${slugs[0]}${slugs[1]}`)
+            try {
+                for (slug of slugs) {
+                    const response = await chai.request(apiRoot)
+                        .delete(`/postings/${slugs[0]}${slugs[1]}`)
+                        .set('Authorization', `Bearer ${token}`)
+                        .set('Content-Type', 'application/json')
+                        .send();
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                }
+    
+                const getResponse = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings`)
                     .set('Authorization', `Bearer ${token}`)
-                    .set('Content-Type', 'application/json')
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
             }
-
-            const getResponse = await chai.request(apiRoot)
-                .get(`/users/${testId}/postings`)
-                .set('Authorization', `Bearer ${token}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(200);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('postings');
-            expect(response.body.postings).to.be.array();
-            expect(response.body.postings.length).to.equal(0);
         });
     });
 

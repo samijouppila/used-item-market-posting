@@ -101,7 +101,7 @@ const getSelectedUserPostings = async (req, res) => {
         return res.status(401).send("Unauthorized") // User can only get a list of their own postings
     }
     Posting.find( {seller: req.user._id} )
-        .populate('user', '-username -birthDate -password -__v')
+        .populate('seller', '-username -birthDate -password -__v')
         .exec( function (err, postings) {
             if (err) return res.status(500).send("Unknown error happened");
             res.status(200).json({postings})
