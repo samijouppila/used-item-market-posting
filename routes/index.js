@@ -5,7 +5,7 @@ const postingRouter = require('./postings');
 const apiRouter = express.Router();
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('../reference/Used-Item-Market-API.v1.json');
+const swaggerDocument = require('../reference/documentation.v1.json');
 
 apiRouter.get('/', (req, res) => {
     res.status(200).send("Used item market API root. See /documentation");
