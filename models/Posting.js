@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Image = require('../models/Image')
 
 const PostingSchema = new Schema(
     {
@@ -67,6 +68,12 @@ PostingSchema.pre('validate', function(next) {
         this.invalidate('deliveryTypes', 'Must specify at least one valid delivery type', this.deliveryTypes.shipping);
     }
     next();
+})
+
+PostingSchema.pre('remove', async function(next) {
+    for (image of this.images) {
+        await Image.findOneAndDelete( {_id: image});
+    }
 })
 
 const Posting = mongoose.model('Posting', PostingSchema);

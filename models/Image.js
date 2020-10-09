@@ -3,9 +3,14 @@ const Schema = mongoose.Schema;
 
 const ImageSchema = new Schema(
     {
-        publicId: {
-            type: String,
-            required: true
+        image: {
+            name: String,
+            data: Buffer,
+            contentType: String
+        },
+        posting: {
+            type: Schema.ObjectId,
+            ref: 'Posting'
         }
     }
 );
