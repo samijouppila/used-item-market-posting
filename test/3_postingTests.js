@@ -49,7 +49,7 @@ describe('User routes', function () {
         token = loginResponse.body.token;
     });
 
-    
+
 
     describe('Create new posting', function () {
         it('Should successfully create a new posting with valid request body', async function () {
@@ -221,27 +221,27 @@ describe('User routes', function () {
 
         it("Should gain more entries in the list when they are created", async function () {
             const postResponse = await chai.request(apiRoot)
-                    .post("/postings")
-                    .set('Authorization', `Bearer ${token}`)
-                    .set('Content-Type', 'application/json')
-                    .send(
-                        {
-                            "title": "Helkama Jopo",
-                            "description": "Used blue bicycle in good condition",
-                            "category": "cycling",
-                            "location": {
-                                "country": "FI",
-                                "city": "Oulu",
-                                "postalCode": "90570"
-                            },
-                            "askingPrice": 150,
-                            "deliveryTypes": {
-                                "shipping": true,
-                                "pickup": true
-                            }
+                .post("/postings")
+                .set('Authorization', `Bearer ${token}`)
+                .set('Content-Type', 'application/json')
+                .send(
+                    {
+                        "title": "Helkama Jopo",
+                        "description": "Used blue bicycle in good condition",
+                        "category": "cycling",
+                        "location": {
+                            "country": "FI",
+                            "city": "Oulu",
+                            "postalCode": "90570"
+                        },
+                        "askingPrice": 150,
+                        "deliveryTypes": {
+                            "shipping": true,
+                            "pickup": true
                         }
-                    );
-            
+                    }
+                );
+
             slugs.push(postResponse.body.slug);
 
             const response = await chai.request(apiRoot)
@@ -257,38 +257,230 @@ describe('User routes', function () {
         });
     });
 
-    describe("Modify a posting", function() {
-        it('Should modify an existing posting when given new information for all fields in valid format', async function() {
+    describe("Modify a posting", function () {
+        it('Should modify an existing posting when given new information for all fields in valid format', async function () {
             try {
-                 // TODO
-            } catch(error) {
-                assert.fail(error);
+                const response = await chai.request(apiRoot)
+                    .put(`/postings/${slugs[0]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            "title": "Helkama",
+                            "description": "Used red bicycle in good condition",
+                            "category": "cycling",
+                            "location": {
+                                "country": "FI",
+                                "city": "Oulu",
+                                "postalCode": "90570"
+                            },
+                            "askingPrice": 100,
+                            "deliveryTypes": {
+                                "shipping": true,
+                                "pickup": true
+                            }
+                        }
+                    );
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('title');
+                expect(response.body.title).to.equal('Helkama');
+                expect(response.body).to.have.property('description');
+                expect(response.body.description).to.equal('Used red bicycle in good condition');
+                expect(response.body).to.have.property('category');
+                expect(response.body.category).to.equal('cycling');
+                expect(response.body).to.have.property('location');
+                expect(response.body.location).to.have.property('country');
+                expect(response.body.location.country).to.equal('FI');
+                expect(response.body.location).to.have.property('city');
+                expect(response.body.location.city).to.equal('Oulu');
+                expect(response.body).to.have.property('askingPrice');
+                expect(response.body.askingPrice).to.equal(100);
+                expect(response.body).to.have.property('deliveryTypes');
+                expect(response.body.deliveryTypes).to.have.property('shipping');
+                expect(response.body.deliveryTypes.shipping).to.equal(true);
+                expect(response.body.deliveryTypes).to.have.property('pickup');
+                expect(response.body.deliveryTypes.pickup).to.equal(true);
+                expect(response.body).to.have.property('seller');
+                expect(response.body.seller).to.have.property('contactInformation');
+                expect(response.body.seller.contactInformation).to.have.property('name');
+                expect(response.body.seller.contactInformation.name).to.equal('Matti Meikäläinen');
+                expect(response.body.seller.contactInformation).to.have.property('email');
+                expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
+                expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
+                expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
+                // -- TODO Images
+                /*expect(response.body).to.have.property('images');
+                expect(response.body.images).to.be.array();
+                expect(response.body.images.length).to.equal(0);*/
+                expect(response.body).to.have.property('slug');
+                expect(response.body.slug).to.be.string();
+                expect(response.body).to.have.property('_id');
+                expect(response.body._id).to.be.string();
+                expect(response.body).to.have.property('createdAt');
+                expect(response.body.createdAt).to.be.string();
+                expect(response.body).to.have.property('updatedAt');
+                expect(response.body.updatedAt).to.be.string();
+                expect(response.body.updatedAt).to.not.equal(response.body.createdAt);
+            } catch (error) {
+                assert.fail(error)
             }
         });
 
         it('Should modify an existing posting when only given description as a field in a valid format', async function () {
             try {
-                // TODO
+                const response = await chai.request(apiRoot)
+                    .put(`/postings/${slugs[0]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            "description": "Used green bicycle in good condition",
+                        }
+                    );
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('description');
+                expect(response.body.description).to.equal('Used green bicycle in good condition');
             } catch (error) {
                 assert.fail(error);
             }
         });
 
-        it('Should not modify slug, _id, createdAt or updatedAt fields if given in the request body', async function() {
+        it('Should not modify slug, createdAt or updatedAt fields if given in the request body', async function () {
             try {
-                // TODO
+                const response = await chai.request(apiRoot)
+                    .put(`/postings/${slugs[0]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            slug: "not-applicable-slug",
+                            createdAt: "2010-09-21T17:32:28Z",
+                            updatedAt: "2010-09-22T17:32:28Z"
+                        }
+                    );
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('slug');
+                expect(response.body.slug).to.be.string();
+                expect(response.body.slug).to.not.equal('not-applicable-slug');
+                expect(response.body).to.have.property('_id');
+                expect(response.body._id).to.be.string();
+                expect(response.body._id).to.not.equal('invalididhere');
+                expect(response.body).to.have.property('createdAt');
+                expect(response.body.createdAt).to.be.string();
+                expect(response.body.createddAt).to.not.equal("2010-09-21T17:32:28Z");
+                expect(response.body).to.have.property('updatedAt');
+                expect(response.body.updatedAt).to.be.string();
+                expect(response.body.updatedAt).to.not.equal("2010-09-22T17:32:28Z");
             } catch (error) {
                 assert.fail(error);
             }
         })
 
-        it('Should fail if the user is attempting to set both delivery types as false', async function() {
+        it('Should fail if the user is attempting to set both delivery types as false', async function () {
             try {
-                // TODO
+                const response = await chai.request(apiRoot)
+                    .put(`/postings/${slugs[0]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            "deliveryTypes": {
+                                "shipping": false,
+                                "pickup": false
+                            }
+                        }
+                    );
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(400);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription')
             } catch (error) {
                 assert.fail(error);
             }
         })
+
+        it('Should fail when trying to modify a non-existing posting', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .put(`/postings/${slugs[0]}${slugs[1]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            "title": "Helkama",
+                            "description": "Used red bicycle in good condition",
+                            "category": "cycling",
+                            "location": {
+                                "country": "FI",
+                                "city": "Oulu",
+                                "postalCode": "90570"
+                            },
+                            "askingPrice": 100,
+                            "deliveryTypes": {
+                                "shipping": true,
+                                "pickup": true
+                            }
+                        }
+                    );
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription')
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+    });
+
+    describe("Delete a posting", function () {
+        it('Should fail when trying to delete a non-existent posting', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .delete(`/postings/${slugs[0]}${slugs[1]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription')
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+
+        it('Should delete existing posting with valid authorization', async function () {
+            try {
+                for (slug of slugs) {
+                    const response = await chai.request(apiRoot)
+                        .delete(`/postings/${slug}`)
+                        .set('Authorization', `Bearer ${token}`)
+                        .set('Content-Type', 'application/json')
+                        .send();
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                }
+    
+                const response = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
     });
 
     after(async function () {
