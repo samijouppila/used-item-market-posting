@@ -5,11 +5,17 @@
     "version": "1.0",
     "description": "API for a marketplace of used items",
     "contact": {
-      "name": "Sami Jouppila"
+      "name": "-",
+      "url": "-"
     }
   },
   "servers": [
     {
+      "url": "https://t8josa01-used-item-market.herokuapp.com/api",
+      "description": "Hosted"
+    },
+    {
+      "description": "Local",
       "url": "http://localhost:3000/api"
     }
   ],
