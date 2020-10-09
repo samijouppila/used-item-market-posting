@@ -459,7 +459,7 @@ describe('User routes', function () {
             try {
                 for (slug of slugs) {
                     const response = await chai.request(apiRoot)
-                        .delete(`/postings/${slugs[0]}${slugs[1]}`)
+                        .delete(`/postings/${slug}`)
                         .set('Authorization', `Bearer ${token}`)
                         .set('Content-Type', 'application/json')
                         .send();
@@ -467,7 +467,7 @@ describe('User routes', function () {
                     expect(response.status).to.equal(200);
                 }
     
-                const getResponse = await chai.request(apiRoot)
+                const response = await chai.request(apiRoot)
                     .get(`/users/${testId}/postings`)
                     .set('Authorization', `Bearer ${token}`)
                     .send();

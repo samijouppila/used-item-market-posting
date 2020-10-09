@@ -53,7 +53,7 @@ const modifyExistingPosting = async (req, res) => {
         .populate('seller', '-username -birthDate -password -__v')
         .exec( function (err, posting) {
             if (err || !posting) return res.status(404).send({ errorDescription: "Posting not found"});
-            if (req.user._id != posting.seller._id) {
+            if (req.user._id != String(posting.seller._id)) {
                 return res.status(401).send("Unauthorized") // User can only modify their own postings
             }
             for (key in req.body) {
@@ -68,7 +68,23 @@ const modifyExistingPosting = async (req, res) => {
         });
 }
 
+const deleteExistingPosting = async (req, res) => {
+    Posting.findOne( {slug: req.params.slug } )
+        .populate('seller', '-username -birthDate -password -__v')
+        .exec( function (err, posting) {
+            if (err || !posting) return res.status(404).send({ errorDescription: "Posting not found"});
+            if (req.user._id != String(posting.seller._id)) {
+                return res.status(401).send("Unauthorized") // User can only delete their own postings
+            }
+            posting.remove( function(err, posting) {
+                if (err) return res.status(500).send({ errorDescription: "Deletion failed for unknown reason" })
+                res.status(200).send("OK!");
+            });
+        });
+}
+
 module.exports = {
     createNewPosting,
-    modifyExistingPosting
+    modifyExistingPosting,
+    deleteExistingPosting
 }
