@@ -2,7 +2,12 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Used Item Market API",
-    "version": "1.0"
+    "version": "1.0",
+    "description": "API for a marketplace of used items",
+    "contact": {
+      "name": "-",
+      "url": "-"
+    }
   },
   "servers": [
     {
@@ -152,7 +157,8 @@
                 "properties": {}
               }
             }
-          }
+          },
+          "description": "Request body model for creating a new user"
         },
         "tags": [
           "Users"
@@ -725,12 +731,15 @@
           {
             "User Authorization": []
           }
+        ],
+        "tags": [
+          "Users"
         ]
       }
     },
     "/postings": {
       "post": {
-        "summary": "Create new posting",
+        "summary": "Create a posting",
         "operationId": "post-postings",
         "responses": {
           "201": {
@@ -962,7 +971,285 @@
             }
           },
           "description": "Request body model for creating a new posting"
+        },
+        "tags": [
+          "Postings"
+        ]
+      }
+    },
+    "/postings/{slug}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "slug",
+          "in": "path",
+          "required": true
         }
+      ],
+      "put": {
+        "summary": "Modify a posting",
+        "operationId": "put-postings-slug",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string",
+                          "description": "ISO 3166"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "askingPrice": {
+                      "type": "number"
+                    },
+                    "deliveryTypes": {
+                      "type": "object",
+                      "properties": {
+                        "shipping": {
+                          "type": "boolean"
+                        },
+                        "pickup": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "seller": {
+                      "type": "object",
+                      "properties": {
+                        "contactInformation": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phoneNumber": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "title": "Helkama Jopo",
+                      "description": "Used blue bicycle in good condition",
+                      "category": "cycling",
+                      "location": {
+                        "country": "FI",
+                        "city": "Oulu",
+                        "postalCode": "90570"
+                      },
+                      "askingPrice": 150,
+                      "deliveryTypes": {
+                        "shipping": true,
+                        "pickup": true
+                      },
+                      "seller": {
+                        "contactInformation": {
+                          "name": "Matti Meikäläinen",
+                          "email": "matti.m@mail.com",
+                          "phoneNumber": "+358 40 1234 567"
+                        },
+                        "_id": "4f8313a89231d42189ac"
+                      },
+                      "images": [],
+                      "slug": "helkama-jopo",
+                      "_id": "9ac4f8313a89231d4218",
+                      "createdAt": "2020-09-21T17:32:28Z",
+                      "updatedAt": "2020-09-21T17:32:28Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for an user to modify an existing posting",
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "description": "ISO 3166"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "askingPrice": {
+                    "type": "number"
+                  },
+                  "deliveryTypes": {
+                    "type": "object",
+                    "description": "One or more of delivery types has to be true",
+                    "properties": {
+                      "shipping": {
+                        "type": "boolean"
+                      },
+                      "pickup": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "title": "Helkama Jopo",
+                    "description": "Used blue bicycle in good condition",
+                    "category": "cycling",
+                    "location": {
+                      "country": "FI",
+                      "city": "Oulu",
+                      "postalCode": "90570"
+                    },
+                    "askingPrice": 150,
+                    "deliveryTypes": {
+                      "shipping": true,
+                      "pickup": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body format for modifying a posting. All fields optional"
+        },
+        "tags": [
+          "Postings"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a posting",
+        "operationId": "delete-postings-slug",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "User Authorization": []
+          }
+        ],
+        "description": "Endpoint for an user to delete an existing posting",
+        "tags": [
+          "Postings"
+        ]
       }
     }
   },
@@ -1190,12 +1477,12 @@
       "HTTPBasic for login": {
         "type": "http",
         "scheme": "basic",
-        "description": ""
+        "description": "HTTPBasic with username and password"
       },
       "User Authorization": {
         "type": "http",
         "scheme": "bearer",
-        "description": ""
+        "description": "Token gained from login route"
       }
     }
   },
@@ -1205,6 +1492,9 @@
     },
     {
       "name": "Users"
+    },
+    {
+      "name": "Postings"
     }
   ]
 }
