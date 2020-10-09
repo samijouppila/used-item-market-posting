@@ -257,7 +257,7 @@
         "parameters": [],
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ]
       },
@@ -348,7 +348,7 @@
         "description": "Endpoint for user to modify their own information",
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "requestBody": {
@@ -465,7 +465,7 @@
         "description": "Endpoint for deleting selected user account",
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "tags": [
@@ -509,7 +509,7 @@
         "operationId": "get-auth-login",
         "security": [
           {
-            "HTTPBasic for login": []
+            "HTTPBasic": []
           }
         ],
         "description": "Endpoint for user to log in and obtain an authentication token"
@@ -729,7 +729,7 @@
         "description": "Endpoint for an user to fetch all their own postings",
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "tags": [
@@ -882,7 +882,7 @@
         "description": "Endpoint for an user to create a new posting",
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "requestBody": {
@@ -1142,7 +1142,7 @@
         "description": "Endpoint for an user to modify an existing posting",
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "requestBody": {
@@ -1243,7 +1243,7 @@
         },
         "security": [
           {
-            "User Authorization": []
+            "UserAuthorization": []
           }
         ],
         "description": "Endpoint for an user to delete an existing posting",
@@ -1474,12 +1474,12 @@
       }
     },
     "securitySchemes": {
-      "HTTPBasic for login": {
+      "HTTPBasic": {
         "type": "http",
         "scheme": "basic",
         "description": "HTTPBasic with username and password"
       },
-      "User Authorization": {
+      "UserAuthorization": {
         "type": "http",
         "scheme": "bearer",
         "description": "Token gained from login route"
