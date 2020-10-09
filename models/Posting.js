@@ -47,6 +47,10 @@ const PostingSchema = new Schema(
             ref: 'User',
             required: true
         },
+        images: [{
+            type: Schema.ObjectId,
+            ref: 'Image'
+        }],
         slug: {
             type: String,
             required: true,

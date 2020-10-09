@@ -104,10 +104,9 @@ describe('User routes', function () {
                 expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
                 expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
                 expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
-                // -- TODO Images
-                /*expect(response.body).to.have.property('images');
+                expect(response.body).to.have.property('images');
                 expect(response.body.images).to.be.array();
-                expect(response.body.images.length).to.equal(0);*/
+                expect(response.body.images.length).to.equal(0);
                 expect(response.body).to.have.property('slug');
                 expect(response.body.slug).to.be.string();
                 expect(response.body).to.have.property('_id');
@@ -310,10 +309,6 @@ describe('User routes', function () {
                 expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
                 expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
                 expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
-                // -- TODO Images
-                /*expect(response.body).to.have.property('images');
-                expect(response.body.images).to.be.array();
-                expect(response.body.images.length).to.equal(0);*/
                 expect(response.body).to.have.property('slug');
                 expect(response.body.slug).to.be.string();
                 expect(response.body).to.have.property('_id');
