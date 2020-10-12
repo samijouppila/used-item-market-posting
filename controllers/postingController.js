@@ -49,6 +49,18 @@ const createNewPosting = async (req, res) => {
     })
 }
 
+const getExistingPosting = async (req, res) => {
+    Posting.findOne({ slug: req.params.slug }, '-__v')
+        .populate('seller', '-username -birthDate -password -__v')
+        .populate('images', '_id')
+        .exec(function (err, posting) {
+            if (err || !posting) {
+                return res.status(404).send({ errorDescription: "Posting not found" });
+            }
+            res.status(200).json(posting);
+        });
+}
+
 const modifyExistingPosting = async (req, res) => {
     Posting.findOne({ slug: req.params.slug }, '-__v')
         .populate('seller', '-username -birthDate -password -__v')
@@ -146,6 +158,7 @@ const deleteSelectedImage = async (req, res) => {
 
 module.exports = {
     createNewPosting,
+    getExistingPosting,
     modifyExistingPosting,
     deleteExistingPosting,
     addImageToPosting,

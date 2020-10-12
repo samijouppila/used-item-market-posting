@@ -17,6 +17,7 @@ const {
 
 const {
     createNewPosting,
+    getExistingPosting,
     modifyExistingPosting,
     deleteExistingPosting,
     addImageToPosting,
@@ -28,6 +29,8 @@ postingRouter.post('/:slug/images', checkJwt, multerUpload.single('image'), addI
 postingRouter.delete('/:slug/images/:id', checkJwt, deleteSelectedImage);
 
 postingRouter.post('', checkJwt,  createNewPosting);
+
+postingRouter.get('/:slug', getExistingPosting);
 
 postingRouter.put('/:slug', checkJwt, modifyExistingPosting);
 
