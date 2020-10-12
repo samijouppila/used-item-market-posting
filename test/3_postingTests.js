@@ -104,10 +104,9 @@ describe('User routes', function () {
                 expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
                 expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
                 expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
-                // -- TODO Images
-                /*expect(response.body).to.have.property('images');
+                expect(response.body).to.have.property('images');
                 expect(response.body.images).to.be.array();
-                expect(response.body.images.length).to.equal(0);*/
+                expect(response.body.images.length).to.equal(0);
                 expect(response.body).to.have.property('slug');
                 expect(response.body.slug).to.be.string();
                 expect(response.body).to.have.property('_id');
@@ -203,6 +202,29 @@ describe('User routes', function () {
         });
     });
 
+    describe("Get data on a single posting", function () {
+        it("Should return posting with correct slug", async function () {
+            const response = await chai.request(apiRoot)
+                .get(`/postings/${slugs[0]}`)
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(200);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('slug');
+            expect(response.body.slug).to.equal(slugs[0]);
+        });
+
+        it("Should fail with incorrect slug", async function () {
+            const response = await chai.request(apiRoot)
+            .get(`/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(404);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('errorDescription');
+        });
+    });
+
     describe("Get user's postings", function () {
         it("Should return list of user's postings", async function () {
             const response = await chai.request(apiRoot)
@@ -254,6 +276,31 @@ describe('User routes', function () {
             expect(response.body).to.have.property('postings');
             expect(response.body.postings).to.be.array();
             expect(response.body.postings.length).to.equal(2);
+        });
+    });
+
+    describe("Get user's single posting", function () {
+        it("Should return posting with correct authorization, userId and slug", async function () {
+            const response = await chai.request(apiRoot)
+                .get(`/users/${testId}/postings/${slugs[0]}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(200);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('slug');
+            expect(response.body.slug).to.equal(slugs[0]);
+        });
+
+        it("Should fail with incorrect slug", async function () {
+            const response = await chai.request(apiRoot)
+            .get(`/users/${testId}/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                .set('Authorization', `Bearer ${token}`)
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(404);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('errorDescription');
         });
     });
 
@@ -310,10 +357,6 @@ describe('User routes', function () {
                 expect(response.body.seller.contactInformation.email).to.equal('matti.m@mail.com');
                 expect(response.body.seller.contactInformation).to.have.property('phoneNumber');
                 expect(response.body.seller.contactInformation.phoneNumber).to.equal('+358 40 1234 567');
-                // -- TODO Images
-                /*expect(response.body).to.have.property('images');
-                expect(response.body.images).to.be.array();
-                expect(response.body.images.length).to.equal(0);*/
                 expect(response.body).to.have.property('slug');
                 expect(response.body.slug).to.be.string();
                 expect(response.body).to.have.property('_id');

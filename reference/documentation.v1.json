@@ -10,6 +10,11 @@
   },
   "servers": [
     {
+      "url": "https://t8josa01-used-item-market.herokuapp.com/api",
+      "description": "Hosted"
+    },
+    {
+      "description": "Local",
       "url": "http://localhost:3000/api"
     }
   ],
@@ -79,7 +84,7 @@
             }
           }
         },
-        "description": "Endpoint for creating a new user",
+        "description": "Endpoint for creating a new user.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -252,7 +257,7 @@
           }
         },
         "operationId": "get-users-id",
-        "description": "Endpoint for user to get their own information",
+        "description": "Endpoint for user to get their own information.",
         "parameters": [],
         "security": [
           {
@@ -344,7 +349,7 @@
             }
           }
         },
-        "description": "Endpoint for user to modify their own information",
+        "description": "Endpoint for user to modify their own information.",
         "security": [
           {
             "UserAuthorization": []
@@ -461,7 +466,7 @@
             }
           }
         },
-        "description": "Endpoint for deleting selected user account",
+        "description": "Endpoint for deleting selected user account.",
         "security": [
           {
             "UserAuthorization": []
@@ -511,7 +516,7 @@
             "HTTPBasic": []
           }
         ],
-        "description": "Endpoint for user to log in and obtain an authentication token"
+        "description": "Endpoint for user to log in and obtain an authentication token."
       }
     },
     "/users/{id}/postings": {
@@ -725,7 +730,7 @@
             }
           }
         },
-        "description": "Endpoint for an user to fetch all their own postings",
+        "description": "Endpoint for an user to fetch all their own postings.",
         "security": [
           {
             "UserAuthorization": []
@@ -878,7 +883,7 @@
             "description": "Unauthorized"
           }
         },
-        "description": "Endpoint for an user to create a new posting",
+        "description": "Endpoint for an user to create a new posting.",
         "security": [
           {
             "UserAuthorization": []
@@ -1062,7 +1067,12 @@
                     "images": {
                       "type": "array",
                       "items": {
-                        "type": "object"
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          }
+                        }
                       }
                     },
                     "slug": {
@@ -1103,7 +1113,11 @@
                         },
                         "_id": "4f8313a89231d42189ac"
                       },
-                      "images": [],
+                      "images": [
+                        {
+                          "_id": "f8313a89231d41d42189"
+                        }
+                      ],
                       "slug": "helkama-jopo",
                       "_id": "9ac4f8313a89231d4218",
                       "createdAt": "2020-09-21T17:32:28Z",
@@ -1138,7 +1152,7 @@
             }
           }
         },
-        "description": "Endpoint for an user to modify an existing posting",
+        "description": "Endpoint for an user to modify an existing posting.",
         "security": [
           {
             "UserAuthorization": []
@@ -1245,9 +1259,468 @@
             "UserAuthorization": []
           }
         ],
-        "description": "Endpoint for an user to delete an existing posting",
+        "description": "Endpoint for an user to delete an existing posting.",
         "tags": [
           "Postings"
+        ]
+      },
+      "get": {
+        "summary": "Get a single posting",
+        "operationId": "get-postings-slug",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "askingPrice": {
+                      "type": "number"
+                    },
+                    "deliveryTypes": {
+                      "type": "object",
+                      "properties": {
+                        "shipping": {
+                          "type": "boolean"
+                        },
+                        "pickup": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "seller": {
+                      "type": "object",
+                      "properties": {
+                        "contactInformation": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phoneNumber": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "images": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "title": "Helkama Jopo",
+                      "description": "Used blue bicycle in good condition",
+                      "category": "cycling",
+                      "location": {
+                        "country": "FI",
+                        "city": "Oulu",
+                        "postalCode": "90570"
+                      },
+                      "askingPrice": 150,
+                      "deliveryTypes": {
+                        "shipping": true,
+                        "pickup": true
+                      },
+                      "seller": {
+                        "contactInformation": {
+                          "name": "Matti Meikäläinen",
+                          "email": "matti.m@mail.com",
+                          "phoneNumber": "+358 40 1234 567"
+                        },
+                        "_id": "4f8313a89231d42189ac"
+                      },
+                      "images": [
+                        {
+                          "_id": "f8313a89231d41d42189"
+                        }
+                      ],
+                      "slug": "helkama-jopo",
+                      "_id": "9ac4f8313a89231d4218",
+                      "createdAt": "2020-09-21T17:32:28Z",
+                      "updatedAt": "2020-09-21T17:32:28Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for fetching data on a single posting based on given slug.",
+        "tags": [
+          "Postings"
+        ]
+      }
+    },
+    "/users/{id}/postings/{slug}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "slug",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get a single posting for user",
+        "tags": [
+          "Postings"
+        ],
+        "operationId": "get-users-id-postings-slug",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "askingPrice": {
+                      "type": "number"
+                    },
+                    "deliveryTypes": {
+                      "type": "object",
+                      "properties": {
+                        "shipping": {
+                          "type": "boolean"
+                        },
+                        "pickup": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "seller": {
+                      "type": "object",
+                      "properties": {
+                        "contactInformation": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phoneNumber": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "images": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for an user to fetch one of their own postings.",
+        "security": [
+          {
+            "UserAuthorization": []
+          }
+        ]
+      }
+    },
+    "/postings/{slug}/images": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "slug",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Submit a new image to a posting",
+        "operationId": "post-postings-slug-images",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "_id": "767a9165d98fc847321"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for an user to add a single image to their posting. Max images 4 per posting.",
+        "security": [
+          {
+            "UserAuthorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "Include a single image file with form field \"image\". Max file size is set at 1 mb to save size in the database for demo purposes."
+        },
+        "tags": [
+          "Images"
+        ]
+      }
+    },
+    "/images/:id": {
+      "get": {
+        "summary": "Fetch single image",
+        "tags": [
+          "Images"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "File type of the image"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-images-:id",
+        "description": "Public endpoint to fetch a single image from id, to be used in the front end."
+      }
+    },
+    "/postings/{slug}/images{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "slug",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "delete": {
+        "summary": "Delete image from posting",
+        "operationId": "delete-postings-slug-images-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for an user to delete an image from their posting.",
+        "security": [
+          {
+            "UserAuthorization": []
+          }
+        ],
+        "tags": [
+          "Images"
         ]
       }
     }
@@ -1332,21 +1805,85 @@
       "Image": {
         "title": "Image",
         "type": "object",
-        "description": "",
+        "description": "Image model stored in database, containing a single image file",
         "properties": {
           "_id": {
             "type": "string",
             "description": "Generated by MongoDB"
           },
           "image": {
-            "type": "string",
-            "description": "Image is stored as a string buffer in MongoDB"
+            "type": "object",
+            "description": "Data of the image in mongoDB",
+            "required": [
+              "name",
+              "data",
+              "contentType"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Original file name"
+              },
+              "data": {
+                "type": "string",
+                "description": "Raw data in buffer format"
+              },
+              "contentType": {
+                "type": "string",
+                "description": "Image file content type stored for response later"
+              }
+            }
+          },
+          "posting": {
+            "$ref": "#/components/schemas/Posting"
           }
         },
         "required": [
           "_id",
           "image"
-        ]
+        ],
+        "x-examples": {
+          "example-1": {
+            "_id": "1d42189ac4f8313a8923",
+            "image": {
+              "name": "IMG_20191204_120312[1].jpg",
+              "data": "Binary('/9j/4AAQSkZJRgABAQEA/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMU...', 0)",
+              "contentType": "string"
+            },
+            "posting": {
+              "title": "Helkama Jopo",
+              "description": "Used blue bicycle in good condition",
+              "category": "cycling",
+              "location": {
+                "country": "FI",
+                "city": "Oulu",
+                "postalCode": "90570"
+              },
+              "askingPrice": 150,
+              "deliveryTypes": {
+                "shipping": true,
+                "pickup": true
+              },
+              "seller": {
+                "contactInformation": {
+                  "name": "Matti Meikäläinen",
+                  "email": "matti.m@mail.com",
+                  "phoneNumber": "+358 40 1234 567"
+                },
+                "_id": "4f8313a89231d42189ac"
+              },
+              "images": [
+                {
+                  "_id": "1d42189ac4f8313a8923"
+                }
+              ],
+              "slug": "helkama-jopo",
+              "_id": "9ac4f8313a89231d4218",
+              "createdAt": "2020-09-21T17:32:28Z",
+              "updatedAt": "2020-09-21T17:32:28Z"
+            }
+          }
+        }
       },
       "Posting": {
         "title": "Posting",
@@ -1469,7 +2006,8 @@
           "_id",
           "createdAt",
           "updatedAt"
-        ]
+        ],
+        "description": "Posting model"
       }
     },
     "securitySchemes": {
@@ -1494,6 +2032,9 @@
     },
     {
       "name": "Postings"
+    },
+    {
+      "name": "Images"
     }
   ]
 }
