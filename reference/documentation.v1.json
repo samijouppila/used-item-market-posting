@@ -5,8 +5,7 @@
     "version": "1.0",
     "description": "API for a marketplace of used items",
     "contact": {
-      "name": "-",
-      "url": "-"
+      "name": "Sami Jouppila"
     }
   },
   "servers": [
