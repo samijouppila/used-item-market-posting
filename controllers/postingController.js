@@ -54,8 +54,6 @@ const modifyExistingPosting = async (req, res) => {
         .populate('seller', '-username -birthDate -password -__v')
         .exec(function (err, posting) {
             if (err || !posting) {
-                console.log(err)
-                console.log(posting)
                 return res.status(404).send({ errorDescription: "Posting not found" });
             }
             if (req.user._id != String(posting.seller._id)) {
@@ -103,7 +101,7 @@ const addImageToPosting = async (req, res) => {
                 image: {
                     name: req.file.originalname || "image.jpg",
                     data: req.file.buffer,
-                    contentType: req.file.mimeType
+                    contentType: req.file.mimetype
                 },
                 posting: posting._id
             });
