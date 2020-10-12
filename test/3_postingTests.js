@@ -256,6 +256,31 @@ describe('User routes', function () {
         });
     });
 
+    describe("Get user's single posting", function () {
+        it("Should return posting with correct authorization, userId and slug", async function () {
+            const response = await chai.request(apiRoot)
+                .get(`/users/${testId}/postings/${slugs[0]}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(200);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('slug');
+            expect(response.body.slug).to.equal(slugs[0]);
+        });
+
+        it("Should fail with incorrect slug", async function () {
+            const response = await chai.request(apiRoot)
+            .get(`/users/${testId}/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                .set('Authorization', `Bearer ${token}`)
+                .send();
+            expect(response).to.have.property('status');
+            expect(response.status).to.equal(404);
+            expect(response).to.have.property('body');
+            expect(response.body).to.have.property('errorDescription');
+        });
+    });
+
     describe("Modify a posting", function () {
         it('Should modify an existing posting when given new information for all fields in valid format', async function () {
             try {
