@@ -88,11 +88,19 @@ const deleteSelectedUser = async (req, res) => {
     if (req.user._id != req.params.id) {
         return res.status(401).send("Unauthorized") // User can only delete their own account
     }
-    User.findOneAndDelete({ _id: req.params.id}, function(err, user) {
+    User.findOne({ _id: req.params.id}, async function(err, user) {
         if (err || !user)  return res.status(404).send({
             errorResponse: "User not found"
         });
-        res.status(200).send("OK!");
+        user.remove(async function (err, user) {
+            if (err) return res.status(500).send({ errorDescription: "Deletion failed for unknown reason" })
+            const postings = await Posting.find( {seller: user._id });
+            for (const posting of postings) {
+                await posting.remove();
+            };
+            res.status(200).send("OK!");
+        });
+        
     })
 }
 
