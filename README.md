@@ -5,7 +5,7 @@ Used Item Market API for course Cloud Integration 2020
 
 [Documentation](https://t8josa01-used-item-market.herokuapp.com/api/documentation)
 
-Note: They are deployed using the free tier on Heroku. This means they may be asleep for a few minutes when you try to access them the first time, so a request may take some time to finish initially.
+Note: They are deployed using the free tier on Heroku. This means they may be asleep for a minute or so when you try to access them the first time, so a request may take some time to finish initially.
 
 
 # Setup
