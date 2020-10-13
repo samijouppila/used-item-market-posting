@@ -332,7 +332,6 @@ describe('User routes', function () {
             try {
                 const response = await chai.request(apiRoot)
                     .get(`/postings`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
@@ -350,7 +349,6 @@ describe('User routes', function () {
             try {
                 const response = await chai.request(apiRoot)
                     .get(`/postings?country=FI&city=Oulu&category=cycling`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
@@ -366,7 +364,6 @@ describe('User routes', function () {
             try {
                 const response1 = await chai.request(apiRoot)
                     .get(`/postings?country=SE`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response1).to.have.property('status');
                 expect(response1.status).to.equal(200);
@@ -376,7 +373,6 @@ describe('User routes', function () {
                 expect(response1.body.postings.length).to.equal(0);
                 const response2 = await chai.request(apiRoot)
                     .get(`/postings?city=Helsinki`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response2).to.have.property('status');
                 expect(response2.status).to.equal(200);
@@ -386,7 +382,6 @@ describe('User routes', function () {
                 expect(response2.body.postings.length).to.equal(0);
                 const response3 = await chai.request(apiRoot)
                     .get(`/postings?category=car`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response3).to.have.property('status');
                 expect(response3.status).to.equal(200);
@@ -402,7 +397,6 @@ describe('User routes', function () {
             try {
                 const response = await chai.request(apiRoot)
                     .get(`/postings?page=2`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
@@ -421,7 +415,6 @@ describe('User routes', function () {
                 dayAfterTomorrow.setDate(today.getDate() + 2);
                 const response = await chai.request(apiRoot)
                     .get(`/postings?startDate=${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}&endDate=${dayAfterTomorrow.getFullYear()}-${dayAfterTomorrow.getMonth() + 1}-${dayAfterTomorrow.getDate()}`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
@@ -439,7 +432,6 @@ describe('User routes', function () {
                 dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
                 const response = await chai.request(apiRoot)
                     .get(`/postings?startDate=${dayAfterTomorrow.getFullYear()}-${dayAfterTomorrow.getMonth() + 1}-${dayAfterTomorrow.getDate()}`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
@@ -457,7 +449,6 @@ describe('User routes', function () {
                 yesterday.setDate(yesterday.getDate() - 1);
                 const response = await chai.request(apiRoot)
                     .get(`/postings?endDate=${yesterday.getFullYear()}-${yesterday.getMonth() + 1}-${yesterday.getDate()}`)
-                    .set('Authorization', `Bearer ${token}`)
                     .send();
                 expect(response).to.have.property('status');
                 expect(response.status).to.equal(200);
