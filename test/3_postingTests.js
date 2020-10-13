@@ -423,7 +423,7 @@ describe('User routes', function () {
             } catch (error) {
                 assert.fail(error);
             }
-        })
+        });
 
         it('Should fail if the user is attempting to set both delivery types as false', async function () {
             try {
@@ -446,7 +446,7 @@ describe('User routes', function () {
             } catch (error) {
                 assert.fail(error);
             }
-        })
+        });
 
         it('Should fail when trying to modify a non-existing posting', async function () {
             try {

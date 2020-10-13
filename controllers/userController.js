@@ -108,7 +108,7 @@ const getSelectedUserPostings = async (req, res) => {
     if (req.user._id != req.params.id) {
         return res.status(401).send("Unauthorized") // User can only get a list of their own postings
     }
-    Posting.find( {seller: req.user._id} )
+    Posting.find( {seller: req.user._id}, '-__v')
         .populate('seller', '-username -birthDate -password -__v')
         .populate('images', '_id')
         .exec( function (err, postings) {
@@ -121,7 +121,7 @@ const getSelectedUserSinglePosting = async (req, res) => {
     if (req.user._id != req.params.id) {
         return res.status(401).send("Unauthorized") // User can only get their own posting through this endpoint
     }
-    Posting.findOne( {seller: req.user._id, slug: req.params.slug })
+    Posting.findOne( {seller: req.user._id, slug: req.params.slug }, '-__v')
         .populate('seller', '-username -birthDate -password -__v')
         .populate('images', '_id')
         .exec( function (err, posting) {

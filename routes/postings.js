@@ -21,7 +21,8 @@ const {
     modifyExistingPosting,
     deleteExistingPosting,
     addImageToPosting,
-    deleteSelectedImage
+    deleteSelectedImage,
+    searchForPostings
 } = require('../controllers/postingController');
 
 postingRouter.post('/:slug/images', checkJwt, multerUpload.single('image'), addImageToPosting);
@@ -32,9 +33,12 @@ postingRouter.post('', checkJwt,  createNewPosting);
 
 postingRouter.get('/:slug', getExistingPosting);
 
+postingRouter.get('', searchForPostings);
+
 postingRouter.put('/:slug', checkJwt, modifyExistingPosting);
 
 postingRouter.delete('/:slug', checkJwt, deleteExistingPosting);
+
 
 
 module.exports = postingRouter;

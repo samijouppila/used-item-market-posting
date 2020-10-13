@@ -156,11 +156,79 @@ const deleteSelectedImage = async (req, res) => {
         })
 }
 
+const searchForPostings = async (req, res) => {
+    let {
+        category,
+        city,
+        country,
+        startDate,
+        endDate,
+        page
+    } = req.query;
+
+    const filterConditions = {};
+    
+    if (category) {
+        filterConditions.category = category;
+    }
+    if (city) {
+        filterConditions['location.city'] = city;
+    }
+    if (country) {
+        filterConditions['location.country'] = country;
+    }    
+    // Check timestamps on startDate / endDate
+    try {
+        if (startDate) {
+            const startDateArray = startDate.split('-');
+            startDate = new Date(Date.UTC(startDateArray[0], startDateArray[1] - 1, startDateArray[2]));
+            if (startDate.getTime() !== startDate.getTime() ) return res.status(400).send( { errorDescription: "Invalid start date query parameter" } );
+            filterConditions.createdAt = {}
+            filterConditions.createdAt["$gte"] = startDate;
+
+        }
+        if (endDate) {
+            const endDateArray = req.query.endDate.split('-');
+            endDate = new Date(Date.UTC(endDateArray[0], endDateArray[1]- 1, endDateArray[2]));
+            if (endDate.getTime() !== endDate.getTime()) return res.status(400).send( { errorDescription: "Invalid end date query parameter" } );
+            filterConditions.createdAt = { ...filterConditions["createdAt"]};
+            filterConditions.createdAt["$lte"] = endDate;
+        }
+    } catch (error) {
+        return res.status(400).send("Invalid date query parameters");
+    }
+
+    page = (page ? page : 1)
+
+    pagination = {};
+    pagination.limit = 10;
+    pagination.skip = (page - 1) * 10;
+    Posting.find(
+        filterConditions,
+        '-__v',
+        pagination
+        )
+        .populate('seller', '-username -birthDate -password -__v')
+        .populate('images', '_id')
+        .exec( function (err, postings) {
+            if ( err )  {
+                return res.status(400).send( { errorDescription: "Invalid query parameeters" } );
+            }
+            res.status(200).json(
+                {
+                    postings,
+                    page
+                }
+            );
+        });
+}
+
 module.exports = {
     createNewPosting,
     getExistingPosting,
     modifyExistingPosting,
     deleteExistingPosting,
     addImageToPosting,
-    deleteSelectedImage
+    deleteSelectedImage,
+    searchForPostings
 }
