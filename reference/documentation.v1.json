@@ -1149,6 +1149,14 @@
             "in": "query",
             "name": "endDate",
             "description": "End of date range (format: YYYY-MM-DD)"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "page",
+            "description": "10 results per page. If omitted page 1 is assumed."
           }
         ],
         "tags": [
