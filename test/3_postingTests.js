@@ -6,6 +6,8 @@ const expect = require("chai").expect;
 const assert = require("chai").assert;
 const apiRoot = "http://localhost:3000/api";
 
+const fs = require('fs');
+
 const server = require("../server");
 
 const createTestUser = async () => {
@@ -26,7 +28,7 @@ const createTestUser = async () => {
         );
 }
 
-describe('User routes', function () {
+describe('Posting routes', function () {
 
     // Jwt token and test user id storage for reuse later
     let token;
@@ -34,6 +36,9 @@ describe('User routes', function () {
 
     // Slug storage for created postings for reuse later
     let slugs = [];
+
+    // Image id to be stored for viewing image tests during creation
+    let imageId;
 
     before(async function () {
         this.timeout(0); // Disable timeout due to db connection setup potentially taking over 2000 ms
@@ -204,103 +209,292 @@ describe('User routes', function () {
 
     describe("Get data on a single posting", function () {
         it("Should return posting with correct slug", async function () {
-            const response = await chai.request(apiRoot)
-                .get(`/postings/${slugs[0]}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(200);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('slug');
-            expect(response.body.slug).to.equal(slugs[0]);
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('slug');
+                expect(response.body.slug).to.equal(slugs[0]);
+            } catch (error) {
+                assert.fail(error)
+            }
         });
 
         it("Should fail with incorrect slug", async function () {
-            const response = await chai.request(apiRoot)
-            .get(`/postings/${slugs[0]}${slugs[1]}`) //Should not exist
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(404);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('errorDescription');
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+            } catch (error) {
+                assert.fail(error)
+            }
         });
     });
 
     describe("Get user's postings", function () {
         it("Should return list of user's postings", async function () {
-            const response = await chai.request(apiRoot)
-                .get(`/users/${testId}/postings`)
-                .set('Authorization', `Bearer ${token}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(200);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('postings');
-            expect(response.body.postings).to.be.array();
-            expect(response.body.postings.length).to.equal(1);
-            expect(response.body.postings[0]).to.have.property('title')
-            expect(response.body.postings[0].title).to.equal('Helkama Jopo');
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(1);
+                expect(response.body.postings[0]).to.have.property('title')
+                expect(response.body.postings[0].title).to.equal('Helkama Jopo');
+            } catch (error) {
+                assert.fail(error)
+            }
         });
 
         it("Should gain more entries in the list when they are created", async function () {
-            const postResponse = await chai.request(apiRoot)
-                .post("/postings")
-                .set('Authorization', `Bearer ${token}`)
-                .set('Content-Type', 'application/json')
-                .send(
-                    {
-                        "title": "Helkama Jopo",
-                        "description": "Used blue bicycle in good condition",
-                        "category": "cycling",
-                        "location": {
-                            "country": "FI",
-                            "city": "Oulu",
-                            "postalCode": "90570"
-                        },
-                        "askingPrice": 150,
-                        "deliveryTypes": {
-                            "shipping": true,
-                            "pickup": true
+            try {
+                const postResponse = await chai.request(apiRoot)
+                    .post("/postings")
+                    .set('Authorization', `Bearer ${token}`)
+                    .set('Content-Type', 'application/json')
+                    .send(
+                        {
+                            "title": "Helkama Jopo",
+                            "description": "Used blue bicycle in good condition",
+                            "category": "cycling",
+                            "location": {
+                                "country": "FI",
+                                "city": "Oulu",
+                                "postalCode": "90570"
+                            },
+                            "askingPrice": 150,
+                            "deliveryTypes": {
+                                "shipping": true,
+                                "pickup": true
+                            }
                         }
-                    }
-                );
+                    );
+                slugs.push(postResponse.body.slug);
 
-            slugs.push(postResponse.body.slug);
-
-            const response = await chai.request(apiRoot)
-                .get(`/users/${testId}/postings`)
-                .set('Authorization', `Bearer ${token}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(200);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('postings');
-            expect(response.body.postings).to.be.array();
-            expect(response.body.postings.length).to.equal(2);
+                const response = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(2);
+            } catch (error) {
+                assert.fail(error)
+            }
         });
     });
 
     describe("Get user's single posting", function () {
         it("Should return posting with correct authorization, userId and slug", async function () {
-            const response = await chai.request(apiRoot)
-                .get(`/users/${testId}/postings/${slugs[0]}`)
-                .set('Authorization', `Bearer ${token}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(200);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('slug');
-            expect(response.body.slug).to.equal(slugs[0]);
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings/${slugs[0]}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('slug');
+                expect(response.body.slug).to.equal(slugs[0]);
+            } catch (error) {
+                assert.fail(error)
+            }
         });
 
         it("Should fail with incorrect slug", async function () {
-            const response = await chai.request(apiRoot)
-            .get(`/users/${testId}/postings/${slugs[0]}${slugs[1]}`) //Should not exist
-                .set('Authorization', `Bearer ${token}`)
-                .send();
-            expect(response).to.have.property('status');
-            expect(response.status).to.equal(404);
-            expect(response).to.have.property('body');
-            expect(response.body).to.have.property('errorDescription');
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/users/${testId}/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+    });
+
+    describe("View selected public posting", function () {
+        it("Should return posting with correct slug", async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('slug');
+                expect(response.body.slug).to.equal(slugs[0]);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+
+        it("Should fail with incorrect slug", async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}${slugs[1]}`) //Should not exist
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+    });
+
+    describe("Search postings", function () {
+        it("Should return all previously made postings when given no query parameters", async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(2);
+                expect(response.body).to.have.property('page');
+                expect(response.body.page).to.equal(1);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return all previously made postings when given query parameters that match", async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings?country=FI&city=Oulu&category=cycling`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(2);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return no postings when given a query parameter with no matching results", async function () {
+            try {
+                const response1 = await chai.request(apiRoot)
+                    .get(`/postings?country=SE`)
+                    .send();
+                expect(response1).to.have.property('status');
+                expect(response1.status).to.equal(200);
+                expect(response1).to.have.property('body');
+                expect(response1.body).to.have.property('postings');
+                expect(response1.body.postings).to.be.array();
+                expect(response1.body.postings.length).to.equal(0);
+                const response2 = await chai.request(apiRoot)
+                    .get(`/postings?city=Helsinki`)
+                    .send();
+                expect(response2).to.have.property('status');
+                expect(response2.status).to.equal(200);
+                expect(response2).to.have.property('body');
+                expect(response2.body).to.have.property('postings');
+                expect(response2.body.postings).to.be.array();
+                expect(response2.body.postings.length).to.equal(0);
+                const response3 = await chai.request(apiRoot)
+                    .get(`/postings?category=car`)
+                    .send();
+                expect(response3).to.have.property('status');
+                expect(response3.status).to.equal(200);
+                expect(response3).to.have.property('body');
+                expect(response3.body).to.have.property('postings');
+                expect(response3.body.postings).to.be.array();
+                expect(response3.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return no postings when given a page that has no results", async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/postings?page=2`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return previously made postings when given a startDate of today and an endDate of 2 days from now", async function () {
+            try {
+                const today = new Date();
+                const dayAfterTomorrow = new Date(today);
+                dayAfterTomorrow.setDate(today.getDate() + 2);
+                const response = await chai.request(apiRoot)
+                    .get(`/postings?startDate=${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}&endDate=${dayAfterTomorrow.getFullYear()}-${dayAfterTomorrow.getMonth() + 1}-${dayAfterTomorrow.getDate()}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(2);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return no postings when given a startDate of 2 days from now", async function () {
+            try {
+                const dayAfterTomorrow = new Date();
+                dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+                const response = await chai.request(apiRoot)
+                    .get(`/postings?startDate=${dayAfterTomorrow.getFullYear()}-${dayAfterTomorrow.getMonth() + 1}-${dayAfterTomorrow.getDate()}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
+            }
+        });
+        it("Should return no postings when given an endDate of yesterday", async function () {
+            try {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const response = await chai.request(apiRoot)
+                    .get(`/postings?endDate=${yesterday.getFullYear()}-${yesterday.getMonth() + 1}-${yesterday.getDate()}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('postings');
+                expect(response.body.postings).to.be.array();
+                expect(response.body.postings.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error)
+            }
         });
     });
 
@@ -423,7 +617,7 @@ describe('User routes', function () {
             } catch (error) {
                 assert.fail(error);
             }
-        })
+        });
 
         it('Should fail if the user is attempting to set both delivery types as false', async function () {
             try {
@@ -446,7 +640,7 @@ describe('User routes', function () {
             } catch (error) {
                 assert.fail(error);
             }
-        })
+        });
 
         it('Should fail when trying to modify a non-existing posting', async function () {
             try {
@@ -481,6 +675,164 @@ describe('User routes', function () {
         });
     });
 
+
+
+    describe('Add an image to a posting', async function () {
+        it('Should succeed for an image file of suitable size', async function () {
+            try {
+                const file = fs.readFileSync(process.cwd() + '/public/images/test_image.jpg');
+                const response = await chai.request(apiRoot)
+                    .post(`/postings/${slugs[0]}/images`)
+                    .attach('image', file, 'test_image.jpg')
+                    .set('Authorization', `Bearer ${token}`);
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(201);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('_id');
+                expect(response.body._id).to.be.string();
+
+                imageId = response.body._id;
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+
+        it('Should fail for an image file with too large size', async function () {
+            try {
+                const file = fs.readFileSync(process.cwd() + '/public/images/test_image_large.jpg');
+                const response = await chai.request(apiRoot)
+                    .post(`/postings/${slugs[0]}/images`)
+                    .attach('image', file, 'test_image.jpg')
+                    .set('Authorization', `Bearer ${token}`);
+                expect(response).to.have.property('status');
+                expect(response.status).to.not.equal(201);
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+
+        it('Should fail for non-existant slug', async function () {
+            try {
+                const file = fs.readFileSync(process.cwd() + '/public/images/test_image.jpg');
+                const response = await chai.request(apiRoot)
+                    .post(`/postings/${slugs[0]}${slugs[1]}/images`)
+                    .attach('image', file, 'test_image.jpg')
+                    .set('Authorization', `Bearer ${token}`);
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+                expect(response.body.errorDescription).to.be.string();
+
+            } catch (error) {
+                assert.fail(error);
+            }
+        });
+    });
+
+    describe('View an image of a posting', async function () {
+        it('Should succeed with existing image id', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/images/${imageId}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('headers');
+                expect(response.headers).to.have.property('content-type');
+                expect(response.headers['content-type']).to.equal('image/jpeg')
+            } catch (error) {
+                assert.fail(error);
+            }
+
+        });
+
+        it('Should succeed with existing image stored in a posting', async function () {
+            try {
+                const postingResponse = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}`)
+                    .send();
+                expect(postingResponse).to.have.property('status');
+                expect(postingResponse.status).to.equal(200);
+                expect(postingResponse).to.have.property('body');
+                expect(postingResponse.body).to.have.property('images');
+                expect(postingResponse.body.images).to.be.array();
+                expect(postingResponse.body.images.length).to.equal(1);
+                expect(postingResponse.body.images[0]).to.have.property('_id');
+                expect(postingResponse.body.images[0]._id).to.be.string();
+
+                const response = await chai.request(apiRoot)
+                    .get(`/images/${postingResponse.body.images[0]._id}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+                expect(response).to.have.property('headers');
+                expect(response.headers).to.have.property('content-type');
+                expect(response.headers['content-type']).to.equal('image/jpeg')
+            } catch (error) {
+                assert.fail(error);
+            }
+
+        })
+
+        it('Should fail with non-existing image id', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .get(`/images/${imageId}-this-should-not-exist`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+                expect(response.body.errorDescription).to.be.string();
+            } catch (error) {
+                assert.fail(error);
+            }
+
+        });
+    });
+
+    describe("Delete image from posting", function () {
+        it('Should fail with non-existing image id', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .delete(`/postings/${slugs[0]}/images/${imageId}-this-should-not-exist`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(404);
+                expect(response).to.have.property('body');
+                expect(response.body).to.have.property('errorDescription');
+                expect(response.body.errorDescription).to.be.string();
+            } catch (error) {
+                assert.fail(error);
+            }
+        })
+
+        it('Should succeed with existing image id', async function () {
+            try {
+                const response = await chai.request(apiRoot)
+                    .delete(`/postings/${slugs[0]}/images/${imageId}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .send();
+                expect(response).to.have.property('status');
+                expect(response.status).to.equal(200);
+
+                const postingResponse = await chai.request(apiRoot)
+                    .get(`/postings/${slugs[0]}`)
+                    .send();
+                expect(postingResponse).to.have.property('status');
+                expect(postingResponse.status).to.equal(200);
+                expect(postingResponse).to.have.property('body');
+                expect(postingResponse.body).to.have.property('images');
+                expect(postingResponse.body.images).to.be.array();
+                expect(postingResponse.body.images.length).to.equal(0);
+            } catch (error) {
+                assert.fail(error);
+            }
+        })
+    })
+
     describe("Delete a posting", function () {
         it('Should fail when trying to delete a non-existent posting', async function () {
             try {
@@ -509,7 +861,7 @@ describe('User routes', function () {
                     expect(response).to.have.property('status');
                     expect(response.status).to.equal(200);
                 }
-    
+
                 const response = await chai.request(apiRoot)
                     .get(`/users/${testId}/postings`)
                     .set('Authorization', `Bearer ${token}`)
