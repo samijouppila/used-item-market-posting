@@ -1051,6 +1051,9 @@
                           }
                         }
                       }
+                    },
+                    "page": {
+                      "type": "integer"
                     }
                   }
                 },
@@ -1156,7 +1159,7 @@
             },
             "in": "query",
             "name": "page",
-            "description": "10 results per page. If omitted page 1 is assumed."
+            "description": "10 results per page. If omitted page 1 is assumed. Minimum value 1"
           }
         ],
         "tags": [
