@@ -198,8 +198,7 @@ const searchForPostings = async (req, res) => {
         return res.status(400).send("Invalid date query parameters");
     }
 
-    page = (page ? page : 1)
-
+    page = page ? page : 1;
     pagination = {};
     pagination.limit = 10;
     pagination.skip = (page - 1) * 10;
