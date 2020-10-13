@@ -362,7 +362,7 @@ describe('User routes', function () {
                 assert.fail(error)
             }
         });
-        it("Should return nothing when given a query parameter with no matching results", async function () {
+        it("Should return no postings when given a query parameter with no matching results", async function () {
             try {
                 const response1 = await chai.request(apiRoot)
                     .get(`/postings?country=SE`)
@@ -398,7 +398,7 @@ describe('User routes', function () {
                 assert.fail(error)
             }
         });
-        it("Should return an empty list when given a page that has no results", async function () {
+        it("Should return no postings when given a page that has no results", async function () {
             try {
                 const response = await chai.request(apiRoot)
                     .get(`/postings?page=2`)
