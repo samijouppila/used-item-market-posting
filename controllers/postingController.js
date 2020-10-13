@@ -103,12 +103,12 @@ const addImageToPosting = async (req, res) => {
     Posting.findOne({ slug: req.params.slug }, '-__v')
         .populate('seller', '-username -birthDate -password -__v')
         .exec(async function (err, posting) {
-            if (err || !posting) return res.status(404).send({ errorDescription: "Posting not found" });
+            if (err || !posting) return res.status(404).send( { errorDescription: "Posting not found" }) ;
             if (req.user._id != String(posting.seller._id)) {
                 return res.status(401).send("Unauthorized") // User can only upload images to their own postings
             }
             if (posting.images.length >= 4) {
-                return res.status(400).send("Only up to 4 images are allowed for each posting") 
+                return res.status(400).send( {errorDescription: "Only up to 4 images are allowed for each posting" } ) 
             }
             const image = new Image({
                 image: {

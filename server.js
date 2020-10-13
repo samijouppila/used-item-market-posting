@@ -28,6 +28,7 @@ module.exports = {
     }
     if (mode === "test") {
       dbUri = process.env.MONGODB_TEST_URI;
+      app.use(express.static('public'));
     }
     try {
       console.log("Connecting to database...")
