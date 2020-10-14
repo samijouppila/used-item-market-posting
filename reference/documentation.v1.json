@@ -1587,6 +1587,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "description": "Endpoint for fetching data on a single posting based on given slug.",
@@ -1823,7 +1833,7 @@
         ]
       }
     },
-    "/images/:id": {
+    "/images/{id}": {
       "get": {
         "summary": "Fetch single image",
         "tags": [
@@ -1862,7 +1872,17 @@
         },
         "operationId": "get-images-:id",
         "description": "Public endpoint to fetch a single image from id, to be used in the front end."
-      }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ]
     },
     "/postings/{slug}/images/{id}": {
       "parameters": [
