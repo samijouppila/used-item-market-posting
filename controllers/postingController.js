@@ -17,7 +17,7 @@ const createNewPosting = async (req, res) => {
             errorDescription: "Posting must have a valid delivery type"
         })
     }
-    const slug = await generatePostingSlug(req.body.description);
+    const slug = await generatePostingSlug(req.body.title);
     const newPosting = new Posting({
         ...req.body,
         seller: req.user._id,
