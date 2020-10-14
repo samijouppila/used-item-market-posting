@@ -1864,7 +1864,7 @@
         "description": "Public endpoint to fetch a single image from id, to be used in the front end."
       }
     },
-    "/postings/{slug}/images{id}": {
+    "/postings/{slug}/images/{id}": {
       "parameters": [
         {
           "schema": {
