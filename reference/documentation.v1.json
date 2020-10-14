@@ -1135,7 +1135,7 @@
             },
             "in": "query",
             "name": "country",
-            "description": "Location of item, country (format: "
+            "description": "Location of item, country (format: ISO 3166)"
           },
           {
             "schema": {
