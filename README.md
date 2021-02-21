@@ -1,11 +1,11 @@
-# used-item-market
-Used Item Market API for course Cloud Integration 2020
+# used-item-market-api
+Microservice version of used-item-market. Same functionality as original, but split into 3 microservices that communicate with each other.
 
-[Deployed at heroku](https://t8josa01-used-item-market.herokuapp.com/api)
+This repository contains the API service.
+
+[Original repository](https://github.com/samijouppila/used-item-market)
 
 [Documentation](https://t8josa01-used-item-market.herokuapp.com/api/documentation)
-
-Note: They are deployed using the free tier on Heroku. This means they may be asleep for a minute or so when you try to access them the first time, so a request may take some time to finish initially.
 
 
 # Setup
