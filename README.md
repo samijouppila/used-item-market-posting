@@ -1,7 +1,7 @@
-# used-item-market-api
+# used-item-market-posting
 Microservice version of used-item-market. Same functionality as original, but split into 3 microservices that communicate with each other.
 
-This repository contains the API service.
+This repository contains the Posting service.
 
 [Original repository](https://github.com/samijouppila/used-item-market)
 
