@@ -1,2 +1,3 @@
 const server = require('./server');
-server.start("production");
+const mode = process.env.MODE || 'production'
+server.start(mode);

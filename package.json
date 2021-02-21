@@ -4,7 +4,7 @@
   "description": "An API for an used item market for course Cloud Integration 2020",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "set MODE=test& node index.js",
     "start": "node index.js"
   },
   "repository": {
