@@ -14,14 +14,14 @@ Copy and rename .env.example to .env. Insert the following environment variables
 - MONGODB_TEST_URI: URI to your MongoDB test database
 - JWT_SECRET: Your JWT secret.
 
-npm install
+`npm install`
 
 # Usage
-npm start
+`npm start`
 
 # Test
 Running npm test starts instance in test mode. Use api-service to run tests once conditions are met.
 
 [API Service](https://github.com/samijouppila/used-item-market-api)
 
-npm test
+`npm test`
